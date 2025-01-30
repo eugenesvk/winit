@@ -414,14 +414,12 @@ impl WindowExtWindows for Window {
 
     #[inline]
     fn set_titlebar(&self, titlebar: bool) {
-        let window = self.as_any().downcast_ref::<crate::platform_impl::Window>().unwrap();
-        window.set_titlebar(titlebar)
+        self.window.set_titlebar(titlebar)
     }
 
     #[inline]
     fn is_titlebar(&self) -> bool {
-        let window = self.as_any().downcast_ref::<crate::platform_impl::Window>().unwrap();
-        window.is_titlebar()
+        self.window.is_titlebar()
     }
 
     #[inline]
