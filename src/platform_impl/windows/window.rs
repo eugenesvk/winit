@@ -1298,7 +1298,8 @@ unsafe fn init(
     let mut window_flags = WindowFlags::empty();
     window_flags.set(WindowFlags::MARKER_DECORATIONS, attributes.decorations);
     window_flags.set(WindowFlags::TITLE_BAR, attributes.platform_specific.titlebar);
-    window_flags.set(WindowFlags::TOP_RESIZE_BORDER, attributes.platform_specific.top_resize_border);
+    window_flags
+        .set(WindowFlags::TOP_RESIZE_BORDER, attributes.platform_specific.top_resize_border);
     window_flags.set(
         WindowFlags::MARKER_UNDECORATED_SHADOW,
         attributes.platform_specific.decoration_shadow,
