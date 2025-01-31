@@ -106,6 +106,20 @@ impl ApplicationHandler for Application {
             WindowEvent::KeyboardInput { event, .. } => {
                 if event.state == ElementState::Pressed && !event.repeat {
                     match event.key_without_modifiers().as_ref() {
+                        Key::Character("1") => {
+                            info!("win pos {:#?}",win.outer_position());
+                            win.set_outer_position(dpi::Position::Physical(
+                                dpi::PhysicalPosition::new(0, 0),
+                            ));
+                            info!("set position to 0,0")
+                        },
+                        Key::Character("2") => {
+                            info!("win pos {:#?}",win.outer_position());
+                            win.set_outer_position(dpi::Position::Physical(
+                                dpi::PhysicalPosition::new(50, 0),
+                            ));
+                            info!("set position to 50,0")
+                        },
                         Key::Character("q") => {
                             win.set_titlebar(true);
                             info!("set_titlebar         → true")
