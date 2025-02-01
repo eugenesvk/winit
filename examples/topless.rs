@@ -98,7 +98,7 @@ impl ApplicationHandler for Application {
                 if event.state == ElementState::Pressed && !event.repeat {
                     match event.key_without_modifiers().as_ref() {
                         Key::Character("5") => {println!(
-                            "win pos \nouter{:?}\nsurf {:?}",win.outer_position().unwrap(),win.surface_position(),);},
+                            "win pos outer{:?}\nwin pos surf {:?}",win.outer_position().unwrap(),win.surface_position(),);},
                         // Key::Character("i") => {println!("win pos \ninner{:?}\nouter{:?}\nsurf {:?}",win.inner_position().unwrap(),win.outer_position().unwrap(),win.surface_position(),);},
                         // Key::Character("1") => {win.set_inner_position(dpi::Position::Physical(dpi::PhysicalPosition::new( 0,0),));info!("set inner position to  0,0")},
                         // Key::Character("2") => {win.set_inner_position(dpi::Position::Physical(dpi::PhysicalPosition::new(50,0),));info!("set inner position to 50,0")},
