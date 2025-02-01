@@ -68,8 +68,7 @@ use winit::platform::windows::WindowExtWindows;
 #[cfg(windows_platform)]
 impl ApplicationHandler for Application {
     fn can_create_surfaces(&mut self, event_loop: &dyn ActiveEventLoop) {
-    fn can_create_surfaces(&mut self, event_loop: &dyn ActiveEventLoop) {
-        let x = -9; let y = -9;
+        let x = 0; let y = 0;
         println!("initial position (physical): {} {}",x,y);
         let window_attributes = WindowAttributes::default()
             .with_title("Topless (unless you see this)!")
