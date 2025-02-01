@@ -68,13 +68,18 @@ use winit::platform::windows::WindowExtWindows;
 #[cfg(windows_platform)]
 impl ApplicationHandler for Application {
     fn can_create_surfaces(&mut self, event_loop: &dyn ActiveEventLoop) {
+    fn can_create_surfaces(&mut self, event_loop: &dyn ActiveEventLoop) {
+        let x = -9; let y = -9;
+        println!("initial position (physical): {} {}",x,y);
         let window_attributes = WindowAttributes::default()
             .with_title("Topless (unless you see this)!")
-            .with_decorations(true) //       decorations       ≝true
+            // .with_decorations(true) //       decorations       ≝true
             .with_titlebar(false) //         titlebar          ≝true
             .with_resizable(true) //         resizable         ≝true
-            .with_top_resize_border(false) // top_resize_border ≝true
-            .with_position(dpi::Position::Logical(dpi::LogicalPosition::new(0.0, 0.0)));
+            // .with_top_resize_border(false) // top_resize_border ≝true
+            // .with_position(dpi::Position::Logical(dpi::LogicalPosition::new(0.0, -7.0)));
+            .with_position(dpi::Position::Physical(dpi::PhysicalPosition::new(x, y)))
+            ;
         self.window = Some(event_loop.create_window(window_attributes).unwrap());
     }
 
@@ -93,6 +98,16 @@ impl ApplicationHandler for Application {
             WindowEvent::KeyboardInput { event, .. } => {
                 if event.state == ElementState::Pressed && !event.repeat {
                     match event.key_without_modifiers().as_ref() {
+                        Key::Character("5") => {println!(
+                            "win pos \nouter{:?}\nsurf {:?}",win.outer_position().unwrap(),win.surface_position(),);},
+                        // Key::Character("i") => {println!("win pos \ninner{:?}\nouter{:?}\nsurf {:?}",win.inner_position().unwrap(),win.outer_position().unwrap(),win.surface_position(),);},
+                        // Key::Character("1") => {win.set_inner_position(dpi::Position::Physical(dpi::PhysicalPosition::new( 0,0),));info!("set inner position to  0,0")},
+                        // Key::Character("2") => {win.set_inner_position(dpi::Position::Physical(dpi::PhysicalPosition::new(50,0),));info!("set inner position to 50,0")},
+                        Key::Character("1") => {win.set_outer_position(dpi::Position::Physical(dpi::PhysicalPosition::new( 0,0),));info!("set outer position to  0,0")},
+                        Key::Character("2") => {win.set_outer_position(dpi::Position::Physical(dpi::PhysicalPosition::new( -9, -9),));info!("set outer position to - 9,- 9")},
+                        Key::Character("3") => {win.set_outer_position(dpi::Position::Physical(dpi::PhysicalPosition::new(-10,-10),));info!("set outer position to -10,-10")},
+                        Key::Character("4") => {win.set_outer_position(dpi::Position::Physical(dpi::PhysicalPosition::new(50,0),));info!("set outer position to 50,0")},
+
                         Key::Character("q") => {
                             win.set_titlebar(true);
                             info!("set_titlebar         → true")
