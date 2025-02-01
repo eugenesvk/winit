@@ -1138,15 +1138,14 @@ unsafe fn public_window_callback_inner(
     let callback = || match msg {
         WM_NCCALCSIZE => {
             let window_flags = userdata.window_state_lock().window_flags;
-            // Remove top resize border from an untitled window t to free up area for, eg, a custom
+            // Remove top resize border from an untitled window to free up area for, eg, a custom
             // title bar, which should then handle resizing events itself
             if wparam != 0
                 && !window_flags.contains(WindowFlags::TITLE_BAR)
                 && !window_flags.contains(WindowFlags::TOP_RESIZE_BORDER)
                 && window_flags.contains(WindowFlags::RESIZABLE)
-                && !util::is_maximized(window)
+                && !util::is_maximized(window) // max wins have no borders
             {
-                // maximized wins have no borders
                 result = ProcResult::DefWindowProc(wparam);
                 let rect = unsafe { &mut *(lparam as *mut RECT) };
                 let adj_rect = userdata
