@@ -36,6 +36,23 @@ with it, the migration guide should be added below the entry, like:
   // Code snippet.
 
 ```
+outer_position
+ fn set_outer_position(&self, position: Position);
+- test with a window with visible resize borders: add a detection mechanism for visibility first
+  - use Windows OS version to gate that otherwise it seems like there is no way to check?
+  - or detect whether a pixel within WS_THICKFRAME is visible or transparent based on some screen API?
+  - ? how to check whether WS_THICKFRAME is visible or not? because if it's visible, then on positioning we shouldn't offset by it, but show the border instead
+  - [example of making WS_THICKFRAME invisible](https://stackoverflow.com/questions/19919147/how-to-make-ws-thickframe-invisible-but-still-functional-in-mfc)
+  - maybe make it a Windows 10 feature only since otherwise the style is different earlier with a visible border
+    - or does winit not care and draws it's own style somehow?
+- if someone outside changes window styles, then our conditions with window_flags contains won't reflect reality!
+  switch to using actual window styles instead?
+            let window_flags = userdata.window_state_lock().window_flags;
+            if   !window_flags.contains(WindowFlags::TITLE_BAR)
+              && !window_flags.contains(WindowFlags::TOP_RESIZE_BORDER)
+              &&  window_flags.contains(WindowFlags::RESIZABLE) {
+                lparam = -1;
+            }
 
 ```md
 - (WindowsOS) Fixed (removed) an invisible gap between the screen border and the window's visible border at 0 `x`/`y` coordinates due to the fact that window's invisible resize borders are considered part of a window for positioning winAPIs (`SetWindowPos`). Now an invisible resize border is treated the same as a shadow and `with_position` and `set_position` APIs are updated to offset the coordinates before communicating with winAPIs. In some cases (when a window has no title bar, but does have resize borders), the top resize border becomes visible, but it's still ignored for consistency.
