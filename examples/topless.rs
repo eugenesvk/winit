@@ -100,7 +100,7 @@ pub fn get_ws_style_s(style_in:u32) -> String {
     ws_prime.insert(WS_SYSMENU     	, (0x___80000u32	,"Sysmenu"     	.to_string(),"Sys"   	.to_string(),"   "    	.to_string()));
     ws_prime.insert(WS_TABSTOP     	, (0x___10000u32	,"Tabstop"     	.to_string(),"⭾"     	.to_string(),"  "     	.to_string()));
     ws_prime.insert(WS_VISIBLE     	, (0x10000000u32	,"Visible"     	.to_string(),"👁"     	.to_string(),"  "     	.to_string()));
-    let mut ws_combo = HashMap::new(); //
+    let mut ws_combo = IndexMap::new(); //
     ws_combo.insert(WS_OVERLAPPEDWINDOW	, ((WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|WS_MINIMIZEBOX|WS_MAXIMIZEBOX)	,"OverlappedW (O+T+Sys+BdSz+🗖🗕)"	.to_string()," "   	.to_string(),"    "	.to_string()));
     ws_combo.insert(WS_CAPTION         	, ((         WS_BORDER|WS_DLGFRAME)                                                 	,"Title (Bd+Dlg)"               	.to_string(),"−"   	.to_string()," "   	.to_string())); //0x__C00000
     ws_combo.insert(WS_POPUPWINDOW     	, ((WS_POPUP|WS_BORDER      |WS_SYSMENU)                                            	,"PopupWin"                     	.to_string(),"PopW"	.to_string(),"    "	.to_string()));
@@ -108,7 +108,7 @@ pub fn get_ws_style_s(style_in:u32) -> String {
     let mut style = style_in;
     let mut out:String = String::new();
     for (ws, s) in ws_prime {
-        if style & ws == ws {style &= !ws; out += " "; out += &s.2} else {out += &s.3}
+        if style & ws == ws {style &= !ws; out += "¦"; out += &s.2} else {out += &s.3}
     }
     if style != 0 {out += &format!(" ❓{:#x}",style).to_string()};
     out
