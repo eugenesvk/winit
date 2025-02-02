@@ -234,10 +234,10 @@ impl ApplicationHandler for Application {
                             let cyWindowBorders:u32             = win_info.cyWindowBorders; //height of the window border, in pixels
                             let atomWindowType :u16             = win_info.atomWindowType; //window class atom
                             let wCreatorVersion:u16             = win_info.wCreatorVersion; //Windows version of the application that created the window
-                            println!("cbSize={cbSize}b is_active={is_active} style={dwStyle:#x} style_ex={dwExStyle:#x} atomWindowType={atomWindowType} wCreatorVersion={wCreatorVersion}");
-                            println!("↔{cxWindowBorders} ↕{cyWindowBorders} border px");
-                            println!("←{} ↑{} →{} ↓{} window",rcWindow.left,rcWindow.top,rcWindow.right,rcWindow.bottom);
-                            println!("←{} ↑{} →{} ↓{} client",rcClient.left,rcClient.top,rcClient.right,rcClient.bottom);
+                            println!("ℹ  cbSize={cbSize}b is_active={is_active} style={dwStyle:#x} style_ex={dwExStyle:#x} atomWindowType={atomWindowType} wCreatorVersion={wCreatorVersion}");
+                            println!("   ↔{cxWindowBorders} ↕{cyWindowBorders} border px");
+                            println!("   ←{} ↑{} →{} ↓{} window",rcWindow.left,rcWindow.top,rcWindow.right,rcWindow.bottom);
+                            println!("   ←{} ↑{} →{} ↓{} client",rcClient.left,rcClient.top,rcClient.right,rcClient.bottom);
 // ✗title bar   ✓resize
 // cbSize=60b is_active=1 style=0x160f0000 style_ex=0x20040910 atomWindowType=50061 wCreatorVersion=1280
 // ↔10 ↕10 border px
