@@ -226,6 +226,38 @@ impl ApplicationHandler for Application {
                             println!("↔{cxWindowBorders} ↕{cyWindowBorders} border px");
                             println!("←{} ↑{} →{} ↓{} window",rcWindow.left,rcWindow.top,rcWindow.right,rcWindow.bottom);
                             println!("←{} ↑{} →{} ↓{} client",rcClient.left,rcClient.top,rcClient.right,rcClient.bottom);
+// ✗title bar   ✓resize
+// cbSize=60b is_active=1 style=0x160f0000 style_ex=0x20040910 atomWindowType=50061 wCreatorVersion=1280
+// ↔10 ↕10 border px
+// ←0 ↑0 →820 ↓620 window
+// ←10 ↑10 →810 ↓610 client
+
+// ✗title bar   ✓resize  ✓border (WS_BORDER, thin one, added via spy)
+// cbSize=60b is_active=1 style=0x168f0000 style_ex=0x20040910 atomWindowType=50051 wCreatorVersion=1280
+// ↔11 ↕11 border px
+// ←0 ↑0 →820 ↓620 window
+// ←11 ↑11 →809 ↓609 client
+
+// ✓title bar   ✓resize
+// cbSize=60b is_active=1 style=0x16cf0000 style_ex=0x20040910 atomWindowType=49989 wCreatorVersion=1280
+// style diff = 0xC00000
+// ↔11¦11 border px
+// ←0 ↑0 →820 ↓620 window
+// ←11 ↑45 →809 ↓609 client
+
+// ✓title bar   ✗resize
+// cbSize=60b is_active=1 style=0x16cb0000 style_ex=0x20040910 atomWindowType=50062 wCreatorVersion=1280
+// ↔11 ↕11 border px
+// ←0 ↑0 →820 ↓620 window
+// ←11 ↑45 →809 ↓609 client
+
+// ✗title bar   ✗resize
+// cbSize=60b is_active=1 style=0x160b0000 style_ex=0x20040810 atomWindowType=50062 wCreatorVersion=1280
+// ↔0 ↕0 border px
+// ←0 ↑0 →820 ↓620 window
+// ←0 ↑0 →820 ↓620 client
+
+                            println!(
                             "win pos outer{:?}\nwin pos surf {:?}",win.outer_position().unwrap(),win.surface_position(),);},
                         // Key::Character("i") => {println!("win pos \ninner{:?}\nouter{:?}\nsurf {:?}",win.inner_position().unwrap(),win.outer_position().unwrap(),win.surface_position(),);},
                         // Key::Character("1") => {win.set_inner_position(dpi::Position::Physical(dpi::PhysicalPosition::new( 0,0),));info!("set inner position to  0,0")},
