@@ -135,6 +135,7 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
     } else { // border size = win_rect(with style) - win_rect(with no style)  for an empty client to work with unititialized and minimized windows
         let style    = unsafe{GetWindowLongW(win_id, GWL_STYLE  ) as u32};
         let style_ex = unsafe{GetWindowLongW(win_id, GWL_EXSTYLE) as u32};
+        // let style_no = style & !WS_SIZEBOX & !WS_DLGFRAME;
         let style_no = style & !WS_SIZEBOX;
         let diff     = style & !style_no;
         let style_s    = get_ws_style_s(style   );
@@ -152,14 +153,12 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
            if unsafe{AdjustWindowRectEx(&mut rect, style_no, b_menu.into(), style_ex) == false.into()} {return Err(io::Error::last_os_error())}
            rect};
         let lbr:BdLbr = BdLbr(rect_style_no.left - rect_style.left);
+        let mut title = String::new();
+        let top:BdTop = if style & WS_CAPTION == WS_CAPTION { // windows with a title bar don't have external resize border, it's part of the title bar
+                title += "✓title"; BdTop(0)
+        } else {title += "✗title";BdTop(rect_style_no.top  - rect_style.top)};
         println!("  style={style_s}\nnostyle={style_no_s}\n   diff={diff_s}");
-        println!("← style={} nostyle={}",rect_style.left,rect_style_no.left);
-        println!("→ style={} nostyle={}",rect_style.right,rect_style_no.right);
-        println!("↑ style={} nostyle={}",rect_style.top ,rect_style_no.top);
-        let top:BdTop = if style & WS_CAPTION == WS_CAPTION {
-                println!("✓caption"); BdTop(0)
-        } else {println!("✗caption");BdTop(rect_style_no.top  - rect_style.top)};
-        // windows with a title bar don't have external resize border, it's part of the title bar
+        println!("   ← ✓{} ✗{}   → ✓{} ✗{}  ↑ ✓{} ✗{}  {}",rect_style.left,rect_style_no.left, rect_style.right,rect_style_no.right, rect_style.top ,rect_style_no.top, title);
         Ok((lbr,top))
     }
 }
