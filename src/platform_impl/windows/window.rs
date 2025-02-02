@@ -1,3 +1,11 @@
+#![allow(
+    unused_imports,
+    unused_mut,
+    unused_variables,
+    dead_code,
+    unused_assignments,
+    unused_macros
+)]
 #![cfg(windows_platform)]
 
 use std::cell::Cell;
