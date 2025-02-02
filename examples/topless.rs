@@ -222,7 +222,9 @@ impl ApplicationHandler for Application {
                         Key::Character("5") => {
                             let win_id = _window_id.into_raw().try_into().unwrap();
                             if let Ok((lbr,top)) = get_border_resize_size(win_id) {
-                                println!("↓←→w{} ↑h{} px resize border",lbr.0,top.0);}
+                                println!("←Δ{} ↑Δ{} px resize  border (↓=→=←)",lbr.0,top.0);}
+                            if let Ok((lbr,top)) = get_border_nonsz_size(win_id) {
+                                println!("←Δ{} ↑Δ{} px regular border (↓=→=←)",lbr.0,top.0);}
                             let win_info = get_win_info(win_id).unwrap();
                             let cbSize         :u32             = win_info.cbSize; //size of the structure, in bytes
                             let rcWindow       :RECT            = win_info.rcWindow; //coordinates of the window
