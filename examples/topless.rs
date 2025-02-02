@@ -146,8 +146,9 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
            if unsafe{AdjustWindowRectEx(&mut rect, style_no, b_menu.into(), style_ex) == false.into()} {return Err(io::Error::last_os_error())}
            rect};
         let lbr:BdLbr = BdLbr(rect_style_no.left - rect_style.left);
-        // println!("← style={} nostyle={}",rect_style.left,rect_style_no.left);
-        // println!("↑ style={} nostyle={}",rect_style.top ,rect_style_no.top);
+        println!("  style={style_s}\nnostyle={style_no_s}");
+        println!("← style={} nostyle={}",rect_style.left,rect_style_no.left);
+        println!("↑ style={} nostyle={}",rect_style.top ,rect_style_no.top);
         let top:BdTop = if style & WS_CAPTION == WS_CAPTION {println!("✓caption");BdTop(0)} else {println!("✗caption");BdTop(rect_style_no.top  - rect_style.top)};
         // windows with a title bar don't have external resize border, it's part of the title bar
         Ok((lbr,top))
