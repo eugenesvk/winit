@@ -78,29 +78,43 @@ pub fn win_to_err(result:BOOL) -> Result<(), io::Error> {
     if result != false.into() {Ok(())
     } else                    {Err(io::Error::last_os_error())}
 }
-// pub fn get_win_info(win_id:HWND, mut win_info:PWINDOWINFO) -> Result<PWINDOWINFO , io::Error> {unsafe {
-pub fn get_border_resize_size() -> Result<i32, io::Error> {
-    // if unsafe{IsZoomed(win_id) != 0} {Ok(0) // when maximized: resize borders are hidden outside screen
-    // } else { // border size = win_rect(with style) - win_rect(with no style)  for an empty client to work with unititialized and minimized windows
-    // border size = win_rect(with style) - win_rect(with no style)  for an empty client to work with unititialized and minimized windows
-    let style    = WS_CAPTION | WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU; // Required styles to properly support common window functionality like aero snap
-    let style_no =              WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU;
-    let style_ex = WS_EX_WINDOWEDGE | WS_EX_ACCEPTFILES;
-    let rect_style : RECT = {
-       let mut rect: RECT = unsafe{mem::zeroed()};
-       if unsafe{AdjustWindowRectEx(&mut rect, style   , FALSE, style_ex) == false.into()} {return Err(io::Error::last_os_error())}
-       rect};
-    let rect_style_no : RECT = {
-       let mut rect   : RECT = unsafe{mem::zeroed()};
-       if unsafe{AdjustWindowRectEx(&mut rect, style_no, FALSE, style_ex) == false.into()} {return Err(io::Error::last_os_error())}
-       rect};
-    // let lbr:BdLbr = BdLbr(rect_style_no.left - rect_style.left);
-    let lbr = rect_style_no.left - rect_style.left;
-    println!("← style={} nostyle={}",rect_style.left,rect_style_no.left);
-    // println!("↑ style={} nostyle={}",rect_style.top ,rect_style_no.top);
-    // let top:BdTop = if style & WS_CAPTION == WS_CAPTION {println!("✓caption");BdTop(0)} else {println!("✗caption");BdTop(rect_style_no.top  - rect_style.top)};
-    // windows with a title bar don't have external resize border, it's part of the title bar
-    Ok(lbr)
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash)]
+pub struct BdLbr(i32);
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash)]
+pub struct BdTop(i32);
+pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
+    if unsafe{IsZoomed(win_id) != 0} { // when maximized: borders are hidden, but the title bar is not
+        //  // Border size = win_rect - client_rect
+        //  let rect_ext   : RECT = unsafe {
+        //     let mut rect: RECT = mem::zeroed();
+        //     if GetWindowRect(win_id, &mut rect) == false.into() {Err(io::Error::last_os_error())}
+        //     rect};
+        //  let rect_int   : RECT = unsafe {
+        //     let mut rect: RECT = mem::zeroed();
+        //     if GetClientRect(win_id, &mut rect) == false.into() {Err(io::Error::last_os_error())}
+        //     rect};
+        // wndRect.Size() - clientRect.Size();
+        Ok((BdLbr(0),BdTop(0)))
+    } else { // border size = win_rect(with style) - win_rect(with no style)  for an empty client to work with unititialized and minimized windows
+        let style    = unsafe{GetWindowLongW(win_id, GWL_STYLE  ) as u32};
+        let style_ex = unsafe{GetWindowLongW(win_id, GWL_EXSTYLE) as u32};
+        let style_no = style & !WS_SIZEBOX;
+        let b_menu = unsafe{GetMenu(win_id) != 0};
+        let rect_style : RECT = {
+           let mut rect: RECT = unsafe{mem::zeroed()};
+           if unsafe{AdjustWindowRectEx(&mut rect, style   , b_menu.into(), style_ex) == false.into()} {return Err(io::Error::last_os_error())}
+           rect};
+        let rect_style_no : RECT = {
+           let mut rect   : RECT = unsafe{mem::zeroed()};
+           if unsafe{AdjustWindowRectEx(&mut rect, style_no, b_menu.into(), style_ex) == false.into()} {return Err(io::Error::last_os_error())}
+           rect};
+        let lbr:BdLbr = BdLbr(rect_style_no.left - rect_style.left);
+        // println!("← style={} nostyle={}",rect_style.left,rect_style_no.left);
+        // println!("↑ style={} nostyle={}",rect_style.top ,rect_style_no.top);
+        let top:BdTop = if style & WS_CAPTION == WS_CAPTION {println!("✓caption");BdTop(0)} else {println!("✗caption");BdTop(rect_style_no.top  - rect_style.top)};
+        // windows with a title bar don't have external resize border, it's part of the title bar
+        Ok((lbr,top))
+    }
 }
 pub fn get_win_info(win_id:HWND) -> Result<WINDOWINFO , io::Error> {
     // let rect: RECT = unsafe {
@@ -157,7 +171,10 @@ impl ApplicationHandler for Application {
                 if event.state == ElementState::Pressed && !event.repeat {
                     match event.key_without_modifiers().as_ref() {
                         Key::Character("5") => {
-                            let win_info = get_win_info(_window_id.into_raw().try_into().unwrap()).unwrap();
+                            let win_id = _window_id.into_raw().try_into().unwrap();
+                            if let Ok((lbr,top)) = get_border_resize_size(win_id) {
+                                println!("↓←→w{} ↑h{} px resize border",lbr.0,top.0);}
+                            let win_info = get_win_info(win_id).unwrap();
                             let cbSize         :u32             = win_info.cbSize; //size of the structure, in bytes
                             let rcWindow       :RECT            = win_info.rcWindow; //coordinates of the window
                             let rcClient       :RECT            = win_info.rcClient; //coordinates of the client area (left top right bottom)
