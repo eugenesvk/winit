@@ -615,6 +615,8 @@ pub trait Window: AsAny + Send + Sync {
     /// ## Platform-specific
     ///
     /// - **Web:** Returns the top-left coordinates relative to the viewport.
+    /// - **Windows:** Ignores the invisible resize borders (as well as the top visible resize border
+    ///   that appears when if a window has no title bar).
     /// - **Android / Wayland:** Always returns [`RequestError::NotSupported`].
     fn outer_position(&self) -> Result<PhysicalPosition<i32>, RequestError>;
 
