@@ -79,6 +79,29 @@ pub fn win_to_err(result:BOOL) -> Result<(), io::Error> {
     } else                    {Err(io::Error::last_os_error())}
 }
 // pub fn get_win_info(win_id:HWND, mut win_info:PWINDOWINFO) -> Result<PWINDOWINFO , io::Error> {unsafe {
+pub fn get_border_resize_size() -> Result<i32, io::Error> {
+    // if unsafe{IsZoomed(win_id) != 0} {Ok(0) // when maximized: resize borders are hidden outside screen
+    // } else { // border size = win_rect(with style) - win_rect(with no style)  for an empty client to work with unititialized and minimized windows
+    // border size = win_rect(with style) - win_rect(with no style)  for an empty client to work with unititialized and minimized windows
+    let style    = WS_CAPTION | WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU; // Required styles to properly support common window functionality like aero snap
+    let style_no =              WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU;
+    let style_ex = WS_EX_WINDOWEDGE | WS_EX_ACCEPTFILES;
+    let rect_style : RECT = {
+       let mut rect: RECT = unsafe{mem::zeroed()};
+       if unsafe{AdjustWindowRectEx(&mut rect, style   , FALSE, style_ex) == false.into()} {return Err(io::Error::last_os_error())}
+       rect};
+    let rect_style_no : RECT = {
+       let mut rect   : RECT = unsafe{mem::zeroed()};
+       if unsafe{AdjustWindowRectEx(&mut rect, style_no, FALSE, style_ex) == false.into()} {return Err(io::Error::last_os_error())}
+       rect};
+    // let lbr:BdLbr = BdLbr(rect_style_no.left - rect_style.left);
+    let lbr = rect_style_no.left - rect_style.left;
+    println!("← style={} nostyle={}",rect_style.left,rect_style_no.left);
+    // println!("↑ style={} nostyle={}",rect_style.top ,rect_style_no.top);
+    // let top:BdTop = if style & WS_CAPTION == WS_CAPTION {println!("✓caption");BdTop(0)} else {println!("✗caption");BdTop(rect_style_no.top  - rect_style.top)};
+    // windows with a title bar don't have external resize border, it's part of the title bar
+    Ok(lbr)
+}
 pub fn get_win_info(win_id:HWND) -> Result<WINDOWINFO , io::Error> {
     // let rect: RECT = unsafe {
     //     let mut rect: RECT = mem::zeroed();
