@@ -452,6 +452,7 @@ impl CoreWindow for Window {
 
     fn pre_present_notify(&self) {}
 
+    // TODO: limit to Windows 10 (and maybe 11?)
     fn outer_position(&self) -> Result<PhysicalPosition<i32>, RequestError> {
         util::WindowArea::Outer
             .get_rect(self.hwnd())
