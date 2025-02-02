@@ -190,8 +190,9 @@ impl ApplicationHandler for Application {
         let window_attributes = WindowAttributes::default()
             .with_title("Topless (unless you see this)!")
             // .with_decorations(true) //       decorations       ≝true
-            .with_titlebar(false) //         titlebar          ≝true
+            // .with_titlebar(false) //         titlebar          ≝true
             .with_resizable(true) //         resizable         ≝true
+            .with_surface_size(dpi::Size::Logical(dpi::LogicalSize::new(400.,150.)))
             // .with_top_resize_border(false) // top_resize_border ≝true
             // .with_position(dpi::Position::Logical(dpi::LogicalPosition::new(0.0, -7.0)));
             .with_position(dpi::Position::Physical(dpi::PhysicalPosition::new(x, y)))
