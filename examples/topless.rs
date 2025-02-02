@@ -136,6 +136,8 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
         let style    = unsafe{GetWindowLongW(win_id, GWL_STYLE  ) as u32};
         let style_ex = unsafe{GetWindowLongW(win_id, GWL_EXSTYLE) as u32};
         let style_no = style & !WS_SIZEBOX;
+        let style_s    = get_ws_style_s(style);
+        let style_no_s = get_ws_style_s(style_no);
         let b_menu = unsafe{GetMenu(win_id) != 0};
         let rect_style : RECT = {
            let mut rect: RECT = unsafe{mem::zeroed()};
