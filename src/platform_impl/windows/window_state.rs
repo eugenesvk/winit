@@ -448,9 +448,11 @@ impl WindowFlags {
             // Frameless style implemented by manually overriding the non-client area in
             // `WM_NCCALCSIZE`.
             if !self.contains(WindowFlags::MARKER_DECORATIONS) {
+                println!("@adjust_rect: MARKER_DECORATIONS, removing caption&sizebox");
                 style &= !(WS_CAPTION | WS_SIZEBOX);
             }
             if !self.contains(WindowFlags::TITLE_BAR) {
+                println!("@adjust_rect: TITLE_BAR, removing caption");
                 style &= !WS_CAPTION;
             }
 
