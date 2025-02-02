@@ -453,6 +453,7 @@ impl CoreWindow for Window {
     fn pre_present_notify(&self) {}
 
     // TODO: limit to Windows 10 (and maybe 11?)
+    // impl CoreWindow for Window {
     fn outer_position(&self) -> Result<PhysicalPosition<i32>, RequestError> {
         let window_flags = self.window_state_lock().window_flags;
         util::WindowArea::Outer
@@ -468,8 +469,10 @@ impl CoreWindow for Window {
                     border_left = border_sizing; // ←left: always
                     if !window_flags.contains(WindowFlags::TITLE_BAR) {
                         border_top  = border_sizing  ; // ↑top: if no title bar (border is now visible)
-                    }
-                }
+                            println!("↖{}={}+{} ¦ {}={}+{} @outer_position, resizable, rect+left/top border"    ,rect.left+border_left,rect.left,border_left, rect.top+border_top,rect.top,border_top);
+                    } else {println!("↖{}={}+{} ¦ {}       @outer_position, resizable, rect+left     border adj",rect.left+border_left,rect.left,border_left, rect.top                               );}
+                } else     {println!("↖{}       ¦ {}       @outer_position, resizable, util::WindowArea::Outer" ,rect.left                                  , rect.top                               );}
+                println!("returning pos {} {}",rect.left + border_left, rect.top + border_top);
                 Ok(PhysicalPosition::new(rect.left + border_left, rect.top + border_top))
             })
             .expect(
