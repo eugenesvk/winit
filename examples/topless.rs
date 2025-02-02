@@ -4,8 +4,11 @@
     unused_variables,
     dead_code,
     unused_assignments,
-    unused_macros
+    unused_macros,
+    non_snake_case,
 )]
+use std::mem;
+use std::io;
 use std::error::Error;
 
 use winit::application::ApplicationHandler;
@@ -55,6 +58,39 @@ impl Application {
     fn new() -> Self {
         Self { window: None }
     }
+}
+
+use windows_sys::Win32::UI::WindowsAndMessaging::{
+    AdjustWindowRectEx, EnableMenuItem, GetMenu, GetSystemMenu, GetWindowLongW, SendMessageW,
+    SetWindowLongW, SetWindowPos, ShowWindow, GWL_EXSTYLE, GWL_STYLE, HWND_BOTTOM, HWND_NOTOPMOST,
+    HWND_TOPMOST, MF_BYCOMMAND, MF_DISABLED, MF_ENABLED, SC_CLOSE, SWP_ASYNCWINDOWPOS,
+    SWP_FRAMECHANGED, SWP_NOACTIVATE, SWP_NOMOVE, SWP_NOREPOSITION, SWP_NOSIZE, SWP_NOZORDER,
+    SW_HIDE, SW_MAXIMIZE, SW_MINIMIZE, SW_RESTORE, SW_SHOW, SW_SHOWNOACTIVATE, WINDOWPLACEMENT,
+    WINDOW_EX_STYLE, WINDOW_STYLE, WS_BORDER, WS_CAPTION, WS_CHILD, WS_CLIPCHILDREN,
+    WS_CLIPSIBLINGS, WS_EX_ACCEPTFILES, WS_EX_APPWINDOW, WS_EX_LAYERED, WS_EX_NOREDIRECTIONBITMAP,
+    WS_EX_TOPMOST, WS_EX_TRANSPARENT, WS_EX_WINDOWEDGE, WS_MAXIMIZE, WS_MAXIMIZEBOX, WS_MINIMIZE,
+    WS_MINIMIZEBOX, WS_OVERLAPPEDWINDOW, WS_POPUP, WS_SIZEBOX, WS_SYSMENU, WS_VISIBLE,
+    WINDOWINFO,GetWindowInfo,
+};
+use windows_sys::Win32::Foundation::{POINT, RECT};
+use windows_sys::Win32::Foundation::{BOOL, HWND, NTSTATUS, S_OK};
+pub fn win_to_err(result:BOOL) -> Result<(), io::Error> {
+    if result != false.into() {Ok(())
+    } else                    {Err(io::Error::last_os_error())}
+}
+// pub fn get_win_info(win_id:HWND, mut win_info:PWINDOWINFO) -> Result<PWINDOWINFO , io::Error> {unsafe {
+pub fn get_win_info(win_id:HWND) -> Result<WINDOWINFO , io::Error> {
+    // let rect: RECT = unsafe {
+    //     let mut rect: RECT = mem::zeroed();
+    //     if GetClientRect(window, &mut rect) == false.into() {
+    //         return PointerMoveKind::None; // exit early if GetClientRect failed
+    //     }
+    //     rect
+    // };
+    let mut win_info: WINDOWINFO = unsafe{mem::zeroed()};
+    win_info.cbSize = mem::size_of::<WINDOWINFO>() as u32; // must set cbSize member to sizeof(WINDOWINFO) before calling GetWindowInfo
+    win_to_err(unsafe{GetWindowInfo(win_id, &mut win_info)})?;
+    Ok(win_info)
 }
 
 use winit::event::ElementState;
