@@ -168,6 +168,38 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
         Ok((lbr,top))
     }
 }
+pub fn get_border_resize_size_b() -> Result<i32, io::Error> {
+    let style    = WS_SIZEBOX | WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU; //WS_CAPTION = WS_BORDER | WS_DLGFRAME
+    let style_no =              WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU;
+    let style_ex = WS_EX_WINDOWEDGE | WS_EX_ACCEPTFILES;
+    let rect_style : RECT = {
+       let mut rect: RECT = unsafe{mem::zeroed()};
+       if unsafe{AdjustWindowRectEx(&mut rect, style   , FALSE, style_ex) == false.into()} {return Err(io::Error::last_os_error())}
+       rect};
+    let rect_style_no : RECT = {
+       let mut rect   : RECT = unsafe{mem::zeroed()};
+       if unsafe{AdjustWindowRectEx(&mut rect, style_no, FALSE, style_ex) == false.into()} {return Err(io::Error::last_os_error())}
+       rect};
+    let lbr = rect_style_no.left - rect_style.left;
+    println!("  ✓style={} style✗={}",rect_style.left, rect_style_no.left);
+    Ok(lbr)
+}
+pub fn get_border_nonsz_size_b() -> Result<i32, io::Error> {
+    let style    =              WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU; //WS_CAPTION = WS_BORDER | WS_DLGFRAME
+    let style_no =                          WS_CLIPSIBLINGS | WS_SYSMENU;
+    let style_ex = WS_EX_WINDOWEDGE | WS_EX_ACCEPTFILES;
+    let rect_style : RECT = {
+       let mut rect: RECT = unsafe{mem::zeroed()};
+       if unsafe{AdjustWindowRectEx(&mut rect, style   , FALSE, style_ex) == false.into()} {return Err(io::Error::last_os_error())}
+       rect};
+    let rect_style_no : RECT = {
+       let mut rect   : RECT = unsafe{mem::zeroed()};
+       if unsafe{AdjustWindowRectEx(&mut rect, style_no, FALSE, style_ex) == false.into()} {return Err(io::Error::last_os_error())}
+       rect};
+    let lbr = rect_style_no.left - rect_style.left;
+    println!("  ✓style={} style✗={}",rect_style.left, rect_style_no.left);
+    Ok(lbr)
+}
 pub fn get_border_nonsz_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
     // if unsafe{IsZoomed(win_id) != 0} // when maximized: vis borders are NOT hidden
     // border size = win_rect(with style) - win_rect(with no style)  for an empty client to work with unititialized and minimized windows
