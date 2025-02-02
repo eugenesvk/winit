@@ -133,7 +133,22 @@ impl ApplicationHandler for Application {
             WindowEvent::KeyboardInput { event, .. } => {
                 if event.state == ElementState::Pressed && !event.repeat {
                     match event.key_without_modifiers().as_ref() {
-                        Key::Character("5") => {println!(
+                        Key::Character("5") => {
+                            let win_info = get_win_info(_window_id.into_raw().try_into().unwrap()).unwrap();
+                            let cbSize         :u32             = win_info.cbSize; //size of the structure, in bytes
+                            let rcWindow       :RECT            = win_info.rcWindow; //coordinates of the window
+                            let rcClient       :RECT            = win_info.rcClient; //coordinates of the client area (left top right bottom)
+                            let dwStyle        :WINDOW_STYLE    = win_info.dwStyle; //
+                            let dwExStyle      :WINDOW_EX_STYLE = win_info.dwExStyle; //
+                            let is_active :u32             = win_info.dwWindowStatus; //window status. If this member is WS_ACTIVECAPTION (0x0001), the window is active. Otherwise, this member is zero
+                            let cxWindowBorders:u32             = win_info.cxWindowBorders; //width of the window border, in pixels
+                            let cyWindowBorders:u32             = win_info.cyWindowBorders; //height of the window border, in pixels
+                            let atomWindowType :u16             = win_info.atomWindowType; //window class atom
+                            let wCreatorVersion:u16             = win_info.wCreatorVersion; //Windows version of the application that created the window
+                            println!("cbSize={cbSize}b is_active={is_active} style={dwStyle:#x} style_ex={dwExStyle:#x} atomWindowType={atomWindowType} wCreatorVersion={wCreatorVersion}");
+                            println!("↔{cxWindowBorders} ↕{cyWindowBorders} border px");
+                            println!("←{} ↑{} →{} ↓{} window",rcWindow.left,rcWindow.top,rcWindow.right,rcWindow.bottom);
+                            println!("←{} ↑{} →{} ↓{} client",rcClient.left,rcClient.top,rcClient.right,rcClient.bottom);
                             "win pos outer{:?}\nwin pos surf {:?}",win.outer_position().unwrap(),win.surface_position(),);},
                         // Key::Character("i") => {println!("win pos \ninner{:?}\nouter{:?}\nsurf {:?}",win.inner_position().unwrap(),win.outer_position().unwrap(),win.surface_position(),);},
                         // Key::Character("1") => {win.set_inner_position(dpi::Position::Physical(dpi::PhysicalPosition::new( 0,0),));info!("set inner position to  0,0")},
