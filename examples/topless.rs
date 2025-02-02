@@ -82,34 +82,37 @@ pub fn win_to_err(result:BOOL) -> Result<(), io::Error> {
 use indexmap::IndexMap;
 pub fn get_ws_style_s(style_in:u32) -> String {
     let mut ws_prime = IndexMap::new();
-    ws_prime.insert(WS_SIZEBOX     	, (0x___40000u32	,"BorderSize"  	.to_string(),"↔"     	.to_string()," "     	.to_string()));
-    ws_prime.insert(WS_BORDER      	, (0x__800000u32	,"Border"      	.to_string(),"─"     	.to_string()," "     	.to_string()));
-    ws_prime.insert(WS_DLGFRAME    	, (0x__400000u32	,"Dialog"      	.to_string(),"Dlg"   	.to_string(),"   "   	.to_string()));
-    ws_prime.insert(WS_CHILD       	, (0x40000000u32	,"Child"       	.to_string(),"👶"     	.to_string()," "     	.to_string()));
-    ws_prime.insert(WS_TABSTOP     	, (0x___10000u32	,"Tabstop"     	.to_string(),"⭾"     	.to_string()," "     	.to_string()));
-    ws_prime.insert(WS_GROUP       	, (0x___20000u32	,"Group"       	.to_string(),"G1"    	.to_string(),"  "    	.to_string()));
-    ws_prime.insert(WS_SYSMENU     	, (0x___80000u32	,"Sysmenu"     	.to_string(),"Sys"   	.to_string(),"   "   	.to_string()));
-    ws_prime.insert(WS_HSCROLL     	, (0x__100000u32	,"HScroll"     	.to_string(),"←📜→"   	.to_string(),"   "   	.to_string()));
-    ws_prime.insert(WS_VSCROLL     	, (0x__200000u32	,"VScroll"     	.to_string(),"↓📜↑"   	.to_string(),"   "   	.to_string()));
-    ws_prime.insert(WS_MAXIMIZE    	, (0x_1000000u32	,"Maximize"    	.to_string(),"Max"   	.to_string(),"   "   	.to_string()));
-    ws_prime.insert(WS_MAXIMIZEBOX 	, (0x___10000u32	,"Maximizebox" 	.to_string(),"🗖"     	.to_string()," "     	.to_string()));
-    ws_prime.insert(WS_MINIMIZE    	, (0x20000000u32	,"Minimize"    	.to_string(),"Min"   	.to_string(),"   "   	.to_string()));
-    ws_prime.insert(WS_MINIMIZEBOX 	, (0x___20000u32	,"Minimizebox" 	.to_string(),"🗕"     	.to_string()," "     	.to_string()));
-    ws_prime.insert(WS_OVERLAPPED  	, (0x_______0u32	,"Overlapped"  	.to_string(),"Over"  	.to_string(),"    "  	.to_string()));
-    ws_prime.insert(WS_POPUP       	, (0x80000000u32	,"Popup"       	.to_string(),"Popup" 	.to_string(),"     " 	.to_string()));
-    ws_prime.insert(WS_CLIPCHILDREN	, (0x_2000000u32	,"ClipChildren"	.to_string(),"ClCh"  	.to_string(),"    "  	.to_string()));
-    ws_prime.insert(WS_CLIPSIBLINGS	, (0x_4000000u32	,"ClipSibling" 	.to_string(),"ClSibl"	.to_string(),"      "	.to_string()));
-    ws_prime.insert(WS_DISABLED    	, (0x_8000000u32	,"Disabled"    	.to_string(),"✗"     	.to_string()," "     	.to_string()));
-    ws_prime.insert(WS_VISIBLE     	, (0x10000000u32	,"Visible"     	.to_string(),"👁"     	.to_string()," "     	.to_string()));
+    ws_prime.insert(WS_SIZEBOX      	, (0x___40000u32	,"BorderSize"  	.to_string(),"↔"   	.to_string()," "   	.to_string()));
+    ws_prime.insert(WS_BORDER       	, (0x__800000u32	,"Border"      	.to_string(),"─"   	.to_string()," "   	.to_string()));
+    ws_prime.insert(WS_DLGFRAME     	, (0x__400000u32	,"Dialog"      	.to_string(),"Dlg" 	.to_string(),"   " 	.to_string()));
+    ws_prime.insert(WS_SYSMENU      	, (0x___80000u32	,"Sysmenu"     	.to_string(),"☰"   	.to_string()," "   	.to_string()));
+    ws_prime.insert(WS_MINIMIZEBOX  	, (0x___20000u32	,"Minimizebox" 	.to_string(),"🗕"   	.to_string()," "   	.to_string()));
+    ws_prime.insert(WS_MINIMIZE     	, (0x20000000u32	,"Minimize"    	.to_string(),"•"   	.to_string()," "   	.to_string()));
+    ws_prime.insert(WS_MAXIMIZEBOX  	, (0x___10000u32	,"Maximizebox" 	.to_string(),"🗖"   	.to_string()," "   	.to_string()));
+    ws_prime.insert(WS_MAXIMIZE     	, (0x_1000000u32	,"Maximize"    	.to_string(),"•"   	.to_string()," "   	.to_string()));
+    ws_prime.insert(WS_HSCROLL      	, (0x__100000u32	,"HScroll"     	.to_string(),"←📜→" 	.to_string(),"   " 	.to_string()));
+    ws_prime.insert(WS_VSCROLL      	, (0x__200000u32	,"VScroll"     	.to_string(),"↓📜↑" 	.to_string(),"   " 	.to_string()));
+    ws_prime.insert(WS_POPUP        	, (0x80000000u32	,"Popup"       	.to_string(),"▀"   	.to_string()," "   	.to_string()));
+    ws_prime.insert(WS_CLIPCHILDREN 	, (0x_2000000u32	,"ClipChildren"	.to_string(),"×Ch" 	.to_string(),"   " 	.to_string()));
+    ws_prime.insert(WS_CLIPSIBLINGS 	, (0x_4000000u32	,"ClipSibling" 	.to_string(),"×Sib"	.to_string(),"    "	.to_string()));
+    ws_prime.insert(WS_CHILD        	, (0x40000000u32	,"Child"       	.to_string(),"👶"   	.to_string()," "   	.to_string()));
+    // ws_prime.insert(WS_OVERLAPPED	, (0x_______0u32	,"Overlapped"  	.to_string(),"🗗"   	.to_string()," "   	.to_string())); //null≝, always exists, don't show
+    ws_prime.insert(WS_DISABLED     	, (0x_8000000u32	,"Disabled"    	.to_string(),"✗"   	.to_string()," "   	.to_string()));
+    ws_prime.insert(WS_VISIBLE      	, (0x10000000u32	,"Visible"     	.to_string(),"👁"   	.to_string()," "   	.to_string()));
+    // ws_prime.insert(WS_TABSTOP   	, (0x___10000u32	,"Tabstop"     	.to_string(),"⭾"   	.to_string()," "   	.to_string())); // same value as WS_MAXIMIZEBOX, not relevant for wins, only for win=controls
+    // ws_prime.insert(WS_GROUP     	, (0x___20000u32	,"Group"       	.to_string(),"G"   	.to_string()," "   	.to_string())); // ...           WS_MINIMIZEBOX ...
     let mut ws_combo = IndexMap::new(); //
-    ws_combo.insert(WS_OVERLAPPEDWINDOW	, ((WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|WS_MINIMIZEBOX|WS_MAXIMIZEBOX)	,"OverlappedW (O+T+Sys+BdSz+🗖🗕)"	.to_string()," "   	.to_string(),"    "	.to_string()));
-    ws_combo.insert(WS_CAPTION         	, ((         WS_BORDER|WS_DLGFRAME)                                                 	,"Title (Bd+Dlg)"               	.to_string(),"−"   	.to_string()," "   	.to_string())); //0x__C00000
-    ws_combo.insert(WS_POPUPWINDOW     	, ((WS_POPUP|WS_BORDER      |WS_SYSMENU)                                            	,"PopupWin"                     	.to_string(),"PopW"	.to_string(),"    "	.to_string()));
+    ws_combo.insert(WS_CAPTION         	, ((         WS_BORDER|WS_DLGFRAME)                                                 	,"Title (Bd+Dlg)"               	.to_string(),"🗬"	.to_string()," "	.to_string())); //0x__C00000
+    ws_combo.insert(WS_POPUPWINDOW     	, ((WS_POPUP|WS_BORDER      |WS_SYSMENU)                                            	,"PopupWin"                     	.to_string(),"▀"	.to_string()," "	.to_string()));
+    // ws_combo.insert(WS_OVERLAPPEDWINDOW	, ((WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|WS_MINIMIZEBOX|WS_MAXIMIZEBOX)	,"OverlappedW (O+T+Sys+BdSz+🗖🗕)"	.to_string(),"🗗"	.to_string()," "	.to_string()));
 
     let mut style = style_in;
     let mut out:String = String::new();
     for (ws, s) in ws_prime {out += " ";
-        if style & ws == ws {style &= !ws; out += &s.2} else {out += &s.3}
+        if style    & ws == ws {style &= !ws; out += &s.2} else {out += &s.3}
+    }; out += " ¦ ";
+    for (ws, s) in ws_combo {out += " ";
+        if style_in & ws == ws {              out += &s.2} else {out += &s.3}
     }
     if style != 0 {out += &format!(" ❓{:#x}",style).to_string()};
     out += &format!(" ({:#x})",style_in).to_string();
@@ -153,12 +156,15 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
            if unsafe{AdjustWindowRectEx(&mut rect, style_no, b_menu.into(), style_ex) == false.into()} {return Err(io::Error::last_os_error())}
            rect};
         let lbr:BdLbr = BdLbr(rect_style_no.left - rect_style.left);
-        let mut title = String::new();
         let top:BdTop = if style & WS_CAPTION == WS_CAPTION { // windows with a title bar don't have external resize border, it's part of the title bar
-                title += "✓title"; BdTop(0)
-        } else {title += "✗title";BdTop(rect_style_no.top  - rect_style.top)};
-        println!("  style={style_s}\nnostyle={style_no_s}\n   diff={diff_s}");
-        println!("   ← ✓{} ✗{}   → ✓{} ✗{}  ↑ ✓{} ✗{}  {}",rect_style.left,rect_style_no.left, rect_style.right,rect_style_no.right, rect_style.top ,rect_style_no.top, title);
+                BdTop(0)
+        } else {BdTop(rect_style_no.top  - rect_style.top)};
+        println!("  ✓style={style_s}\t| ←{: >3} →{: >3} ↑{: >3}\n  ✗style={style_no_s}\t| ←{: >3} →{: >3} ↑{: >3}\n       Δ={diff_s}\t| ←{: >3} →{: >3} ↑{: >3}"
+            ,rect_style   .left,rect_style   .right,rect_style   .top
+            ,rect_style_no.left,rect_style_no.right,rect_style_no.top
+            ,rect_style   .left  - rect_style_no.left
+            ,rect_style   .right - rect_style_no.right
+            ,rect_style   .top   - rect_style_no.top);
         Ok((lbr,top))
     }
 }
@@ -184,13 +190,15 @@ pub fn get_border_nonsz_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
        if unsafe{AdjustWindowRectEx(&mut rect, style_no, b_menu.into(), style_ex) == false.into()} {return Err(io::Error::last_os_error())}
        rect};
     let lbr:BdLbr = BdLbr(rect_style_no.left - rect_style.left);
-    let mut title = String::new();
-    let top:BdTop = if style & WS_CAPTION == WS_CAPTION {
-            title += "✓title"; BdTop(0)
-    } else {title += "✗title";BdTop(rect_style_no.top  - rect_style.top)};
-    println!("  style={style_s}\nnostyle={style_no_s}\n   diff={diff_s}");
-    println!("   ← ✓{} ✗{}   → ✓{} ✗{}  ↑ ✓{} ✗{}  {}",rect_style.left,rect_style_no.left, rect_style.right,rect_style_no.right, rect_style.top ,rect_style_no.top, title);
-    // windows with a title bar don't have external resize border, it's part of the title bar
+    let top:BdTop = if style & WS_CAPTION == WS_CAPTION { // windows with a title bar don't have external resize border, it's part of the title bar
+            BdTop(0)
+    } else {BdTop(rect_style_no.top  - rect_style.top)};
+    println!("  ✓style={style_s}\t| ←{: >3} →{: >3} ↑{: >3}\n  ✗style={style_no_s}\t| ←{: >3} →{: >3} ↑{: >3}\n       Δ={diff_s}\t| ←{: >3} →{: >3} ↑{: >3}"
+        ,rect_style   .left,rect_style   .right,rect_style   .top
+        ,rect_style_no.left,rect_style_no.right,rect_style_no.top
+        ,rect_style   .left  - rect_style_no.left
+        ,rect_style   .right - rect_style_no.right
+        ,rect_style   .top   - rect_style_no.top);
     Ok((lbr,top))
 }
 pub fn get_win_info(win_id:HWND) -> Result<WINDOWINFO , io::Error> {
@@ -252,22 +260,22 @@ impl ApplicationHandler for Application {
                         Key::Character("5") => {
                             let win_id = _window_id.into_raw().try_into().unwrap();
                             if let Ok((lbr,top)) = get_border_resize_size(win_id) {
-                                println!("←Δ{} ↑Δ{} px resize  border (↓=→=←)",lbr.0,top.0);}
+                                println!("←{} ↑{} px resize  border (↓=→=←)",lbr.0,top.0);}
                             if let Ok((lbr,top)) = get_border_nonsz_size(win_id) {
-                                println!("←Δ{} ↑Δ{} px regular border (↓=→=←)",lbr.0,top.0);}
+                                println!("←{} ↑{} px regular border (↓=→=←)",lbr.0,top.0);}
                             let win_info = get_win_info(win_id).unwrap();
-                            let cbSize         :u32             = win_info.cbSize; //size of the structure, in bytes
-                            let rcWindow       :RECT            = win_info.rcWindow; //coordinates of the window
-                            let rcClient       :RECT            = win_info.rcClient; //coordinates of the client area (left top right bottom)
-                            let dwStyle        :WINDOW_STYLE    = win_info.dwStyle; //
-                            let dwExStyle      :WINDOW_EX_STYLE = win_info.dwExStyle; //
-                            let is_active :u32             = win_info.dwWindowStatus; //window status. If this member is WS_ACTIVECAPTION (0x0001), the window is active. Otherwise, this member is zero
-                            let cxWindowBorders:u32             = win_info.cxWindowBorders; //width of the window border, in pixels
-                            let cyWindowBorders:u32             = win_info.cyWindowBorders; //height of the window border, in pixels
-                            let atomWindowType :u16             = win_info.atomWindowType; //window class atom
-                            let wCreatorVersion:u16             = win_info.wCreatorVersion; //Windows version of the application that created the window
+                            let cbSize         :u32            	= win_info.cbSize; //size of the structure, in bytes
+                            let rcWindow       :RECT           	= win_info.rcWindow; //coordinates of the window
+                            let rcClient       :RECT           	= win_info.rcClient; //coordinates of the client area (left top right bottom)
+                            let dwStyle        :WINDOW_STYLE   	= win_info.dwStyle; //
+                            let dwExStyle      :WINDOW_EX_STYLE	= win_info.dwExStyle; //
+                            let is_active      :u32            	= win_info.dwWindowStatus; //window status. If this member is WS_ACTIVECAPTION (0x0001), the window is active. Otherwise, this member is zero
+                            let cxWindowBorders:u32            	= win_info.cxWindowBorders; //width  of the window border, in pixels
+                            let cyWindowBorders:u32            	= win_info.cyWindowBorders; //height of the window border, in pixels
+                            let atomWindowType :u16            	= win_info.atomWindowType; //window class atom
+                            let wCreatorVersion:u16            	= win_info.wCreatorVersion; //Windows version of the application that created the window
                             println!("ℹ  cbSize={cbSize}b is_active={is_active} style={dwStyle:#x} style_ex={dwExStyle:#x} atomWindowType={atomWindowType} wCreatorVersion={wCreatorVersion}");
-                            println!("   ↔{cxWindowBorders} ↕{cyWindowBorders} border px");
+                            println!("   ↔{cxWindowBorders} ↕{cyWindowBorders} px ∑border");
                             println!("   ←{} ↑{} →{} ↓{} window",rcWindow.left,rcWindow.top,rcWindow.right,rcWindow.bottom);
                             println!("   ←{} ↑{} →{} ↓{} client",rcClient.left,rcClient.top,rcClient.right,rcClient.bottom);
 // ✗title bar   ✓resize
