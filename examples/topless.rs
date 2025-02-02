@@ -270,10 +270,12 @@ impl ApplicationHandler for Application {
                     match event.key_without_modifiers().as_ref() {
                         Key::Character("5") => {
                             let win_id = _window_id.into_raw().try_into().unwrap();
-                            if let Ok((lbr,top)) = get_border_resize_size(win_id) {
-                                println!("←{} ↑{} px resize  border (↓=→=←)",lbr.0,top.0);}
-                            if let Ok((lbr,top)) = get_border_nonsz_size(win_id) {
-                                println!("←{} ↑{} px regular border (↓=→=←)",lbr.0,top.0);}
+                            let (szL,szT) = if let Ok((lbr,top)) = get_border_resize_size(win_id) {
+                                (lbr.0,top.0)} else {(0,0)};
+                            println!("←{szL: >2} ↑{szT: >2} px resize  border (↓=→=←)");
+                            let (bdL,bdT) = if let Ok((lbr,top)) = get_border_nonsz_size(win_id) {
+                                (lbr.0,top.0)} else {(0,0)};
+                            println!("←{bdL: >2} ↑{bdT: >2} px regular border (↓=→=←)");
                             let win_info = get_win_info(win_id).unwrap();
                             let cbSize         :u32            	= win_info.cbSize; //size of the structure, in bytes
                             let rcWindow       :RECT           	= win_info.rcWindow; //coordinates of the window
@@ -286,7 +288,10 @@ impl ApplicationHandler for Application {
                             let atomWindowType :u16            	= win_info.atomWindowType; //window class atom
                             let wCreatorVersion:u16            	= win_info.wCreatorVersion; //Windows version of the application that created the window
                             println!("ℹ  cbSize={cbSize}b is_active={is_active} style={dwStyle:#x} style_ex={dwExStyle:#x} atomWindowType={atomWindowType} wCreatorVersion={wCreatorVersion}");
-                            println!("   ↔{cxWindowBorders} ↕{cyWindowBorders} px ∑border");
+                            println!("   ↔{: >2} ↕{: >2} px border∑",cxWindowBorders,cyWindowBorders);
+                            println!("   ↔{: >2} ↕{: >2} px borders",szL+bdL        , szT+bdT);
+                            let szbdL = szL+bdL;
+                            if szbdL < 0 || szbdL as u32 != cxWindowBorders {println!("❓!!!!!   ∑BORDERS  don't match !!!!!❓");}
                             println!("   ←{} ↑{} →{} ↓{} window",rcWindow.left,rcWindow.top,rcWindow.right,rcWindow.bottom);
                             println!("   ←{} ↑{} →{} ↓{} client",rcClient.left,rcClient.top,rcClient.right,rcClient.bottom);
 // ✗title bar   ✓resize
