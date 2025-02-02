@@ -304,10 +304,12 @@ impl ApplicationHandler for Application {
                             let win_id = _window_id.into_raw().try_into().unwrap();
                             let (szL,szT) = if let Ok((lbr,top)) = get_border_resize_size(win_id) {
                                 (lbr.0,top.0)} else {(0,0)};
-                            println!("←{szL: >2} ↑{szT: >2} px resize  border (↓=→=←)");
+                            let szLb = if let Ok(lbr) = get_border_resize_size_b() {lbr} else {0};
+                            println!("←{szL: >2} ↑{szT: >2} px resize  border (↓=→=←)\n←{szLb: >2}");
                             let (bdL,bdT) = if let Ok((lbr,top)) = get_border_nonsz_size(win_id) {
                                 (lbr.0,top.0)} else {(0,0)};
-                            println!("←{bdL: >2} ↑{bdT: >2} px regular border (↓=→=←)");
+                            let bdLb = if let Ok(lbr) = get_border_nonsz_size_b () {lbr} else {0};
+                            println!("←{bdL: >2} ↑{bdT: >2} px regular border (↓=→=←)\n←{bdLb: >2}");
                             let win_info = get_win_info(win_id).unwrap();
                             let cbSize         :u32            	= win_info.cbSize; //size of the structure, in bytes
                             let rcWindow       :RECT           	= win_info.rcWindow; //coordinates of the window
