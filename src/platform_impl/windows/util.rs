@@ -83,6 +83,49 @@ impl WindowArea {
     }
 }
 
+/// Window's borders.
+#[derive(Debug)]
+pub enum Border {
+    /// Window's resize border (invisible on Windows 10)
+    Size,
+    /// Window's thin border (visible if exists, acts as a sizing border only if [`Border::Size`] exists)
+    Thin,
+}
+
+use windows_sys::Win32::UI::WindowsAndMessaging::{
+    AdjustWindowRectEx, WS_BORDER, WS_CLIPSIBLINGS, WS_EX_WINDOWEDGE, WS_EX_ACCEPTFILES, WS_SIZEBOX, WS_SYSMENU,
+};
+use windows_sys::Win32::Foundation::FALSE;
+
+/// Get "universal" sizes for the invisible resize and visible thin borders without having to
+/// carefully adjust the actual styles of a real window (since, e.g., removing a single `WS_BORDER` style may lead to other changes, thus making the diff of the new rect vs. the old rect come up with incorrect estimate for the thin border that `WS_BORDER` sets
+/// `hwnd` is only used for DPI adjustment
+pub fn get_border_resize(hwnd: HWND, border: Border) -> Result<i32, io::Error> {
+    let style    = match border {
+      Border::Size    => WS_SIZEBOX | WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU,
+      Border::Thin    =>              WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU,
+    };
+    let style_no = match border {
+      Border::Size    =>              WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU,
+      Border::Thin    =>                          WS_CLIPSIBLINGS | WS_SYSMENU,
+    };
+    let style_ex = WS_EX_WINDOWEDGE | WS_EX_ACCEPTFILES;
+    let mut rect_style   : RECT = unsafe{mem::zeroed()};
+    let mut rect_style_no: RECT = unsafe{mem::zeroed()};
+    win_to_err(unsafe{
+        if let (Some(get_dpi_for_window), Some(adjust_window_rect_ex_for_dpi)) =
+            (*GET_DPI_FOR_WINDOW, *ADJUST_WINDOW_RECT_EX_FOR_DPI)
+        {  let dpi = {get_dpi_for_window(hwnd)};
+            adjust_window_rect_ex_for_dpi(&mut rect_style   , style   , FALSE, style_ex, dpi);
+            adjust_window_rect_ex_for_dpi(&mut rect_style_no, style_no, FALSE, style_ex, dpi)
+        } else {
+            AdjustWindowRectEx           (&mut rect_style   , style   , FALSE, style_ex     );
+            AdjustWindowRectEx           (&mut rect_style_no, style_no, FALSE, style_ex     )
+        }
+    })?;
+    Ok(rect_style_no.left - rect_style.left)
+}
+
 pub fn is_maximized(window: HWND) -> bool {
     unsafe {
         let mut placement: WINDOWPLACEMENT = mem::zeroed();
