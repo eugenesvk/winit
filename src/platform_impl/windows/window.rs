@@ -464,14 +464,17 @@ impl CoreWindow for Window {
                 if window_flags.contains(WindowFlags::RESIZABLE) //offset resize border if exists
                 && !util::is_maximized(self.hwnd()) // max wins have no borders
                     {
-                    let border_sizing = if let Ok(sz) = util::get_border_size(self.hwnd(), true) {
-                        sz } else { 0 };
-                    border_left = border_sizing; // ←left: always
-                    if !window_flags.contains(WindowFlags::TITLE_BAR) {
-                        border_top  = border_sizing  ; // ↑top: if no title bar (border is now visible)
-                            println!("↖{}={}+{} ¦ {}={}+{} @outer_position, resizable, rect+left/top border"    ,rect.left+border_left,rect.left,border_left, rect.top+border_top,rect.top,border_top);
-                    } else {println!("↖{}={}+{} ¦ {}       @outer_position, resizable, rect+left     border adj",rect.left+border_left,rect.left,border_left, rect.top                               );}
-                } else     {println!("↖{}       ¦ {}       @outer_position, resizable, util::WindowArea::Outer" ,rect.left                                  , rect.top                               );}
+                    let mut style = unsafe{GetWindowLongW(self.hwnd(), GWL_STYLE) as u32};
+                    if style & WS_SIZEBOX == WS_SIZEBOX { // guard against actual style not matching config flags
+                        let border_sizing = if let Ok(sz) = util::get_border_size(self.hwnd(), true) {
+                            sz } else { 0 };
+                        border_left = border_sizing; // ←left: always
+                        if !window_flags.contains(WindowFlags::TITLE_BAR) {
+                            border_top  = border_sizing  ; // ↑top: if no title bar (border is now visible)
+                                println!("↖{}={}+{} ¦ {}={}+{} @outer_position, resizable, rect+left/top border"    ,rect.left+border_left,rect.left,border_left, rect.top+border_top,rect.top,border_top);
+                        } else {println!("↖{}={}+{} ¦ {}       @outer_position, resizable, rect+left     border adj",rect.left+border_left,rect.left,border_left, rect.top                               );}
+                    } else     {println!("↖{}       ¦ {}       @outer_position, resizable but NO sizebox, util::WindowArea::Outer" ,rect.left                   , rect.top                               );}
+                } else     {    println!("↖{}       ¦ {}       @outer_position, resizable, util::WindowArea::Outer" ,rect.left                                  , rect.top                               );}
                 println!("returning pos {} {}",rect.left + border_left, rect.top + border_top);
                 Ok(PhysicalPosition::new(rect.left + border_left, rect.top + border_top))
             })
