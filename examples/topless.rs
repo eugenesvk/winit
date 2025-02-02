@@ -171,11 +171,22 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
 pub fn get_border_nonsz_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
     // if unsafe{IsZoomed(win_id) != 0} // when maximized: vis borders are NOT hidden
     // border size = win_rect(with style) - win_rect(with no style)  for an empty client to work with unititialized and minimized windows
-    let style    = unsafe{GetWindowLongW(win_id, GWL_STYLE  ) as u32};
+    let style = unsafe{GetWindowLongW(win_id, GWL_STYLE  ) as u32};
+    let mut style_in = style.clone();
     let style_ex = unsafe{GetWindowLongW(win_id, GWL_EXSTYLE) as u32};
-    let style_no = style & !WS_BORDER; //ws_caption = WS_BORDER | WS_DLGFRAME, so it also disappears
-    let diff     = style & !style_no;
-    let style_s    = get_ws_style_s(style   );
+    let isBSz = style & WS_SIZEBOX  == WS_SIZEBOX;
+    let isDlg = style & WS_DLGFRAME == WS_DLGFRAME;
+    let style_no = if   isBSz { //removing border alone doesn't change calc since ? dlgFrame takes its place
+            // println!("has resize, so border+dlg");
+            style & !WS_BORDER & !WS_DLGFRAME
+    } else if isDlg && !isBSz { // without a resize border the older dlgFrame becomes one, and it's treated as visible, so removing just ws_border would take a lot out instead of 1px
+            // println!("no resize, but Dialog → −Dlg from old and −Dlg −Border from new");
+            style_in           ^= WS_DLGFRAME;
+            style & !WS_BORDER & !WS_DLGFRAME
+    } else {style & !WS_BORDER};
+    // let style_no = style & !WS_BORDER; //ws_caption = WS_BORDER | WS_DLGFRAME, so it also disappears
+    let diff     = style_in & !style_no;
+    let style_s    = get_ws_style_s(style_in   );
     let style_no_s = get_ws_style_s(style_no);
     let diff_s     = get_ws_style_s(diff    );
     let b_menu = unsafe{GetMenu(win_id) != 0};
@@ -183,7 +194,7 @@ pub fn get_border_nonsz_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
     rect_client.left = 10; rect_client.right = 75; rect_client.top = 10; rect_client.bottom = 100;
     let rect_style : RECT = {
        let mut rect: RECT = rect_client.clone();
-       if unsafe{AdjustWindowRectEx(&mut rect, style   , b_menu.into(), style_ex) == false.into()} {return Err(io::Error::last_os_error())}
+       if unsafe{AdjustWindowRectEx(&mut rect, style_in   , b_menu.into(), style_ex) == false.into()} {return Err(io::Error::last_os_error())}
        rect};
     let rect_style_no: RECT = {
        let mut rect  : RECT = rect_client.clone();
