@@ -114,8 +114,8 @@ pub fn get_ws_style_s(style_in:u32) -> String {
     for (ws, s) in ws_combo {out += " ";
         if style_in & ws == ws {              out += &s.2} else {out += &s.3}
     }
-    if style != 0 {out += &format!(" ❓{:#x}",style).to_string()};
-    out += &format!(" ({:#x})",style_in).to_string();
+    if style != 0 {out += &format!(" {:>#10x} ❓₁₆",style ).to_string().replace("0x","").replace("0","_");};
+    out +=                &format!(" {:>#10x} ∑₁₆",style_in).to_string().replace("0x","").replace("0","_");
     out
 }
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash)]
