@@ -65,6 +65,7 @@ impl WindowArea {
         match self {
             WindowArea::Outer => {
                 win_to_err(unsafe { GetWindowRect(hwnd, &mut rect) })?;
+                println!("@WindowArea.get_rect ↖{}¦{} ↘{}¦{}",rect.left,rect.right,rect.top,rect.bottom,);
             },
             WindowArea::Inner => unsafe {
                 let mut top_left = mem::zeroed();
