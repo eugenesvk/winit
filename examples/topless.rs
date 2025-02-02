@@ -138,8 +138,8 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
     } else { // border size = win_rect(with style) - win_rect(with no style)  for an empty client to work with unititialized and minimized windows
         let style    = unsafe{GetWindowLongW(win_id, GWL_STYLE  ) as u32};
         let style_ex = unsafe{GetWindowLongW(win_id, GWL_EXSTYLE) as u32};
-        // let style_no = style & !WS_SIZEBOX & !WS_DLGFRAME;
-        let style_no = style & !WS_SIZEBOX;
+        let style_no = style & !WS_SIZEBOX & !WS_DLGFRAME; //removing size box alone doesn't change calc since, I guess, dlgFrame takes its place
+        // let style_no = style & !WS_SIZEBOX;
         let diff     = style & !style_no;
         let style_s    = get_ws_style_s(style   );
         let style_no_s = get_ws_style_s(style_no);
