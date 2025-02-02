@@ -74,7 +74,7 @@ use windows_sys::Win32::UI::WindowsAndMessaging::{
     WINDOWINFO,GetWindowInfo,IsZoomed,
 };
 use windows_sys::Win32::Foundation::{POINT, RECT};
-use windows_sys::Win32::Foundation::{BOOL, HWND, NTSTATUS, S_OK};
+use windows_sys::Win32::Foundation::{BOOL, HWND, NTSTATUS, S_OK, FALSE};
 pub fn win_to_err(result:BOOL) -> Result<(), io::Error> {
     if result != false.into() {Ok(())
     } else                    {Err(io::Error::last_os_error())}
@@ -181,7 +181,7 @@ pub fn get_border_resize_size_b() -> Result<i32, io::Error> {
        if unsafe{AdjustWindowRectEx(&mut rect, style_no, FALSE, style_ex) == false.into()} {return Err(io::Error::last_os_error())}
        rect};
     let lbr = rect_style_no.left - rect_style.left;
-    println!("  ✓style={} style✗={}",rect_style.left, rect_style_no.left);
+    println!("  ✓style={} style✗={} Δ={}",rect_style.left, rect_style_no.left,lbr);
     Ok(lbr)
 }
 pub fn get_border_nonsz_size_b() -> Result<i32, io::Error> {
@@ -197,7 +197,7 @@ pub fn get_border_nonsz_size_b() -> Result<i32, io::Error> {
        if unsafe{AdjustWindowRectEx(&mut rect, style_no, FALSE, style_ex) == false.into()} {return Err(io::Error::last_os_error())}
        rect};
     let lbr = rect_style_no.left - rect_style.left;
-    println!("  ✓style={} style✗={}",rect_style.left, rect_style_no.left);
+    println!("  ✓style={} style✗={} Δ={}",rect_style.left, rect_style_no.left,lbr);
     Ok(lbr)
 }
 pub fn get_border_nonsz_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
