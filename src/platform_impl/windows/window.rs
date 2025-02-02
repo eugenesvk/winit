@@ -454,9 +454,24 @@ impl CoreWindow for Window {
 
     // TODO: limit to Windows 10 (and maybe 11?)
     fn outer_position(&self) -> Result<PhysicalPosition<i32>, RequestError> {
+        let window_flags = self.window_state_lock().window_flags;
         util::WindowArea::Outer
             .get_rect(self.hwnd())
-            .map(|rect| Ok(PhysicalPosition::new(rect.left, rect.top)))
+            .map(|rect| {
+                let mut border_left = 0;
+                let mut border_top  = 0;
+                if window_flags.contains(WindowFlags::RESIZABLE) //offset resize border if exists
+                && !util::is_maximized(self.hwnd()) // max wins have no borders
+                    {
+                    let border_sizing = if let Ok(sz) = util::get_border_size(self.hwnd(), true) {
+                        sz } else { 0 };
+                    border_left = border_sizing; // ←left: always
+                    if !window_flags.contains(WindowFlags::TITLE_BAR) {
+                        border_top  = border_sizing  ; // ↑top: if no title bar (border is now visible)
+                    }
+                }
+                Ok(PhysicalPosition::new(rect.left + border_left, rect.top + border_top))
+            })
             .expect(
                 "Unexpected GetWindowRect failure; please report this error to \
                  rust-windowing/winit",
