@@ -79,28 +79,28 @@ pub fn win_to_err(result:BOOL) -> Result<(), io::Error> {
     if result != false.into() {Ok(())
     } else                    {Err(io::Error::last_os_error())}
 }
-use std::collections::HashMap;
+use indexmap::IndexMap;
 pub fn get_ws_style_s(style_in:u32) -> String {
-    let mut ws_prime = HashMap::new();
-    ws_prime.insert(WS_SIZEBOX     	, (0x___40000u32	,"BorderSize"  	.to_string(),"↔↕"    	.to_string(),"   "    	.to_string()));
-    ws_prime.insert(WS_BORDER      	, (0x__800000u32	,"Border"      	.to_string(),"─"     	.to_string(),"  "     	.to_string()));
-    ws_prime.insert(WS_DLGFRAME    	, (0x__400000u32	,"Dialog"      	.to_string(),"Dlg"   	.to_string(),"    "   	.to_string()));
-    ws_prime.insert(WS_CHILD       	, (0x40000000u32	,"Child"       	.to_string(),"👶"     	.to_string(),"  "     	.to_string()));
-    ws_prime.insert(WS_CLIPCHILDREN	, (0x_2000000u32	,"ClipChildren"	.to_string(),"ClCh"  	.to_string(),"     "  	.to_string()));
-    ws_prime.insert(WS_CLIPSIBLINGS	, (0x_4000000u32	,"ClipSibling" 	.to_string(),"ClSibl"	.to_string(),"       "	.to_string()));
-    ws_prime.insert(WS_DISABLED    	, (0x_8000000u32	,"Disabled"    	.to_string(),"✗"     	.to_string(),"  "     	.to_string()));
-    ws_prime.insert(WS_GROUP       	, (0x___20000u32	,"Group"       	.to_string(),"G1"    	.to_string(),"   "    	.to_string()));
-    ws_prime.insert(WS_HSCROLL     	, (0x__100000u32	,"HScroll"     	.to_string(),"←📜→"   	.to_string(),"    "   	.to_string()));
-    ws_prime.insert(WS_VSCROLL     	, (0x__200000u32	,"VScroll"     	.to_string(),"↓📜↑"   	.to_string(),"    "   	.to_string()));
-    ws_prime.insert(WS_MAXIMIZE    	, (0x_1000000u32	,"Maximize"    	.to_string(),"Max"   	.to_string(),"    "   	.to_string()));
-    ws_prime.insert(WS_MAXIMIZEBOX 	, (0x___10000u32	,"Maximizebox" 	.to_string(),"🗖"     	.to_string(),"  "     	.to_string()));
-    ws_prime.insert(WS_MINIMIZE    	, (0x20000000u32	,"Minimize"    	.to_string(),"Min"   	.to_string(),"    "   	.to_string()));
-    ws_prime.insert(WS_MINIMIZEBOX 	, (0x___20000u32	,"Minimizebox" 	.to_string(),"🗕"     	.to_string(),"  "     	.to_string()));
-    ws_prime.insert(WS_OVERLAPPED  	, (0x_______0u32	,"Overlapped"  	.to_string(),"Over"  	.to_string(),"     "  	.to_string()));
-    ws_prime.insert(WS_POPUP       	, (0x80000000u32	,"Popup"       	.to_string(),"Popup" 	.to_string(),"      " 	.to_string()));
-    ws_prime.insert(WS_SYSMENU     	, (0x___80000u32	,"Sysmenu"     	.to_string(),"Sys"   	.to_string(),"   "    	.to_string()));
-    ws_prime.insert(WS_TABSTOP     	, (0x___10000u32	,"Tabstop"     	.to_string(),"⭾"     	.to_string(),"  "     	.to_string()));
-    ws_prime.insert(WS_VISIBLE     	, (0x10000000u32	,"Visible"     	.to_string(),"👁"     	.to_string(),"  "     	.to_string()));
+    let mut ws_prime = IndexMap::new();
+    ws_prime.insert(WS_SIZEBOX     	, (0x___40000u32	,"BorderSize"  	.to_string(),"↔"     	.to_string()," "     	.to_string()));
+    ws_prime.insert(WS_BORDER      	, (0x__800000u32	,"Border"      	.to_string(),"─"     	.to_string()," "     	.to_string()));
+    ws_prime.insert(WS_DLGFRAME    	, (0x__400000u32	,"Dialog"      	.to_string(),"Dlg"   	.to_string(),"   "   	.to_string()));
+    ws_prime.insert(WS_CHILD       	, (0x40000000u32	,"Child"       	.to_string(),"👶"     	.to_string()," "     	.to_string()));
+    ws_prime.insert(WS_TABSTOP     	, (0x___10000u32	,"Tabstop"     	.to_string(),"⭾"     	.to_string()," "     	.to_string()));
+    ws_prime.insert(WS_GROUP       	, (0x___20000u32	,"Group"       	.to_string(),"G1"    	.to_string(),"  "    	.to_string()));
+    ws_prime.insert(WS_SYSMENU     	, (0x___80000u32	,"Sysmenu"     	.to_string(),"Sys"   	.to_string(),"  "    	.to_string()));
+    ws_prime.insert(WS_HSCROLL     	, (0x__100000u32	,"HScroll"     	.to_string(),"←📜→"   	.to_string(),"   "   	.to_string()));
+    ws_prime.insert(WS_VSCROLL     	, (0x__200000u32	,"VScroll"     	.to_string(),"↓📜↑"   	.to_string(),"   "   	.to_string()));
+    ws_prime.insert(WS_MAXIMIZE    	, (0x_1000000u32	,"Maximize"    	.to_string(),"Max"   	.to_string(),"   "   	.to_string()));
+    ws_prime.insert(WS_MAXIMIZEBOX 	, (0x___10000u32	,"Maximizebox" 	.to_string(),"🗖"     	.to_string()," "     	.to_string()));
+    ws_prime.insert(WS_MINIMIZE    	, (0x20000000u32	,"Minimize"    	.to_string(),"Min"   	.to_string(),"   "   	.to_string()));
+    ws_prime.insert(WS_MINIMIZEBOX 	, (0x___20000u32	,"Minimizebox" 	.to_string(),"🗕"     	.to_string()," "     	.to_string()));
+    ws_prime.insert(WS_OVERLAPPED  	, (0x_______0u32	,"Overlapped"  	.to_string(),"Over"  	.to_string(),"    "  	.to_string()));
+    ws_prime.insert(WS_POPUP       	, (0x80000000u32	,"Popup"       	.to_string(),"Popup" 	.to_string(),"     " 	.to_string()));
+    ws_prime.insert(WS_CLIPCHILDREN	, (0x_2000000u32	,"ClipChildren"	.to_string(),"ClCh"  	.to_string(),"    "  	.to_string()));
+    ws_prime.insert(WS_CLIPSIBLINGS	, (0x_4000000u32	,"ClipSibling" 	.to_string(),"ClSibl"	.to_string(),"      "	.to_string()));
+    ws_prime.insert(WS_DISABLED    	, (0x_8000000u32	,"Disabled"    	.to_string(),"✗"     	.to_string()," "     	.to_string()));
+    ws_prime.insert(WS_VISIBLE     	, (0x10000000u32	,"Visible"     	.to_string(),"👁"     	.to_string()," "     	.to_string()));
     let mut ws_combo = IndexMap::new(); //
     ws_combo.insert(WS_OVERLAPPEDWINDOW	, ((WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|WS_MINIMIZEBOX|WS_MAXIMIZEBOX)	,"OverlappedW (O+T+Sys+BdSz+🗖🗕)"	.to_string()," "   	.to_string(),"    "	.to_string()));
     ws_combo.insert(WS_CAPTION         	, ((         WS_BORDER|WS_DLGFRAME)                                                 	,"Title (Bd+Dlg)"               	.to_string(),"−"   	.to_string()," "   	.to_string())); //0x__C00000
@@ -108,10 +108,11 @@ pub fn get_ws_style_s(style_in:u32) -> String {
 
     let mut style = style_in;
     let mut out:String = String::new();
-    for (ws, s) in ws_prime {
-        if style & ws == ws {style &= !ws; out += "¦"; out += &s.2} else {out += &s.3}
+    for (ws, s) in ws_prime {out += " ";
+        if style & ws == ws {style &= !ws; out += &s.2} else {out += &s.3}
     }
     if style != 0 {out += &format!(" ❓{:#x}",style).to_string()};
+    out += &format!(" ({:#x})",style_in).to_string();
     out
 }
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash)]
