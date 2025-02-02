@@ -136,19 +136,23 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
         let style    = unsafe{GetWindowLongW(win_id, GWL_STYLE  ) as u32};
         let style_ex = unsafe{GetWindowLongW(win_id, GWL_EXSTYLE) as u32};
         let style_no = style & !WS_SIZEBOX;
+        let diff     = style & !style_no;
         let style_s    = get_ws_style_s(style);
         let style_no_s = get_ws_style_s(style_no);
+        let diff_s = get_ws_style_s(diff);
         let b_menu = unsafe{GetMenu(win_id) != 0};
         let rect_style : RECT = {
            let mut rect: RECT = unsafe{mem::zeroed()};
+           rect.left = 50; rect.right = 75; rect.top = 50; rect.bottom = 100;
            if unsafe{AdjustWindowRectEx(&mut rect, style   , b_menu.into(), style_ex) == false.into()} {return Err(io::Error::last_os_error())}
            rect};
         let rect_style_no : RECT = {
            let mut rect   : RECT = unsafe{mem::zeroed()};
+           rect.left = 50; rect.right = 75; rect.top = 50; rect.bottom = 100;
            if unsafe{AdjustWindowRectEx(&mut rect, style_no, b_menu.into(), style_ex) == false.into()} {return Err(io::Error::last_os_error())}
            rect};
         let lbr:BdLbr = BdLbr(rect_style_no.left - rect_style.left);
-        println!("  style={style_s}\nnostyle={style_no_s}");
+        println!("  style={style_s}\nnostyle={style_no_s}\n   diff={diff_s}");
         println!("← style={} nostyle={}",rect_style.left,rect_style_no.left);
         println!("→ style={} nostyle={}",rect_style.right,rect_style_no.right);
         println!("↑ style={} nostyle={}",rect_style.top ,rect_style_no.top);
