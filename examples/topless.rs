@@ -154,6 +154,7 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
     }
 }
 pub fn get_win_info(win_id:HWND) -> Result<WINDOWINFO , io::Error> {
+    // doesn't separate resize borders from others! use GetWindowRect with/out WS_THICKFRAME style
     // let rect: RECT = unsafe {
     //     let mut rect: RECT = mem::zeroed();
     //     if GetClientRect(window, &mut rect) == false.into() {
