@@ -88,7 +88,7 @@ pub fn get_ws_style_s(style_in:u32) -> String {
     ws_prime.insert(WS_CHILD       	, (0x40000000u32	,"Child"       	.to_string(),"👶"     	.to_string()," "     	.to_string()));
     ws_prime.insert(WS_TABSTOP     	, (0x___10000u32	,"Tabstop"     	.to_string(),"⭾"     	.to_string()," "     	.to_string()));
     ws_prime.insert(WS_GROUP       	, (0x___20000u32	,"Group"       	.to_string(),"G1"    	.to_string(),"  "    	.to_string()));
-    ws_prime.insert(WS_SYSMENU     	, (0x___80000u32	,"Sysmenu"     	.to_string(),"Sys"   	.to_string(),"  "    	.to_string()));
+    ws_prime.insert(WS_SYSMENU     	, (0x___80000u32	,"Sysmenu"     	.to_string(),"Sys"   	.to_string(),"   "   	.to_string()));
     ws_prime.insert(WS_HSCROLL     	, (0x__100000u32	,"HScroll"     	.to_string(),"←📜→"   	.to_string(),"   "   	.to_string()));
     ws_prime.insert(WS_VSCROLL     	, (0x__200000u32	,"VScroll"     	.to_string(),"↓📜↑"   	.to_string(),"   "   	.to_string()));
     ws_prime.insert(WS_MAXIMIZE    	, (0x_1000000u32	,"Maximize"    	.to_string(),"Max"   	.to_string(),"   "   	.to_string()));
