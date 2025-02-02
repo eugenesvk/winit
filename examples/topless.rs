@@ -162,9 +162,9 @@ pub fn get_border_resize_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
         println!("  ✓style={style_s}\t| ←{: >3} →{: >3} ↑{: >3}\n  ✗style={style_no_s}\t| ←{: >3} →{: >3} ↑{: >3}\n       Δ={diff_s}\t| ←{: >3} →{: >3} ↑{: >3}"
             ,rect_style   .left,rect_style   .right,rect_style   .top
             ,rect_style_no.left,rect_style_no.right,rect_style_no.top
-            ,rect_style   .left  - rect_style_no.left
-            ,rect_style   .right - rect_style_no.right
-            ,rect_style   .top   - rect_style_no.top);
+            ,rect_style_no.left  - rect_style.left
+            ,rect_style_no.right - rect_style.right
+            ,rect_style_no.top   - rect_style.top  );
         Ok((lbr,top))
     }
 }
@@ -196,9 +196,9 @@ pub fn get_border_nonsz_size(win_id:HWND) -> Result<(BdLbr,BdTop), io::Error> {
     println!("  ✓style={style_s}\t| ←{: >3} →{: >3} ↑{: >3}\n  ✗style={style_no_s}\t| ←{: >3} →{: >3} ↑{: >3}\n       Δ={diff_s}\t| ←{: >3} →{: >3} ↑{: >3}"
         ,rect_style   .left,rect_style   .right,rect_style   .top
         ,rect_style_no.left,rect_style_no.right,rect_style_no.top
-        ,rect_style   .left  - rect_style_no.left
-        ,rect_style   .right - rect_style_no.right
-        ,rect_style   .top   - rect_style_no.top);
+        ,rect_style_no.left  - rect_style.left
+        ,rect_style_no.right - rect_style.right
+        ,rect_style_no.top   - rect_style.top  );
     Ok((lbr,top))
 }
 pub fn get_win_info(win_id:HWND) -> Result<WINDOWINFO , io::Error> {
