@@ -456,7 +456,6 @@ impl CoreWindow for Window {
     fn pre_present_notify(&self) {}
 
     // TODO: limit to Windows 10 (and maybe 11?)
-    // impl CoreWindow for Window {
     fn outer_position(&self) -> Result<PhysicalPosition<i32>, RequestError> {
         let win_flags = self.window_state_lock().window_flags;
         util::WindowArea::Outer
