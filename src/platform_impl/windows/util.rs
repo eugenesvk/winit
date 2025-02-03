@@ -83,17 +83,8 @@ impl WindowArea {
     }
 }
 
-/// Window's borders.
-#[derive(Debug)]
-pub enum Border {
-    /// Window's resize border (invisible on Windows 10)
-    Size,
-    /// Window's thin border (visible if exists, acts as a sizing border only if [`Border::Size`] exists)
-    Thin,
-}
-
 use windows_sys::Win32::UI::WindowsAndMessaging::{
-    AdjustWindowRectEx, WS_BORDER, WS_CLIPSIBLINGS, WS_EX_WINDOWEDGE, WS_EX_ACCEPTFILES, WS_SIZEBOX, WS_SYSMENU,
+    AdjustWindowRectEx, WS_BORDER, WS_CLIPSIBLINGS, WS_EX_WINDOWEDGE, WS_EX_ACCEPTFILES, WS_SIZEBOX, WS_CAPTION, WS_SYSMENU,
 };
 use windows_sys::Win32::Foundation::FALSE;
 
