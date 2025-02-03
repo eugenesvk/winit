@@ -490,6 +490,7 @@ impl CoreWindow for Window {
         } else {
             (0,0)
         };
+        println!("{}={}-{}x {}={}-{}y @set_outer",x-x_off,x,x_off, y-y_off,y,y_off);
 
         let window_state = Arc::clone(&self.window_state);
         let window = self.window;
