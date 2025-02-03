@@ -120,31 +120,35 @@ use crate::platform_impl::windows::window_state::WindowFlags;
 /// window styles to only return offset if it would prevent placing a 0,0 window in the screen's corner
 pub fn get_offset_resize_border(hwnd: HWND, win_flags: WindowFlags) -> Result<dpi::PhysicalInsets<i32>, io::Error> {
     let mut offset = dpi::PhysicalInsets::new(0, 0, 0, 0);
+    println!("flags: reSz={} Tbar={} TSzBd={}",win_flags.contains(WindowFlags::RESIZABLE), win_flags.contains(WindowFlags::TITLE_BAR), win_flags.contains(WindowFlags::TOP_RESIZE_BORDER));
     if !is_maximized(hwnd) {                           // resize borders not pushed off-screen
         let style = unsafe{GetWindowLongW(hwnd, GWL_STYLE) as u32};
         if style & WS_SIZEBOX == WS_SIZEBOX {          // ...actually exist
-            if !win_flags.contains(WindowFlags::RESIZABLE) {tracing::warn!("Window has resize borders, but is configured not to have them");}
+            if !win_flags.contains(WindowFlags::RESIZABLE) {tracing::warn!("Window has resize borders, but is configured not to have them");println!("✗✗✗ MISMATCH ResizeBOx");}
             let border_sizing = get_border_size(hwnd, true)?;
             offset.left = border_sizing.0; // ←left: always offset
 
             if style & WS_CAPTION != WS_CAPTION {            // no caption (≝title+border) exists
-                if win_flags.contains(WindowFlags::TITLE_BAR) {tracing::warn!("Window has no title bar, but is configured to have it");}
+                if win_flags.contains(WindowFlags::TITLE_BAR) {tracing::warn!("Window has no title bar, but is configured to have it");println!("✗✗✗ MISMATCH Title bar");}
                 if win_flags.contains(WindowFlags::TOP_RESIZE_BORDER) { // top resize border is NOT removed "manually"
                     offset.top  = border_sizing.0  ; // ↑top: offset if no title bar (border is now visible)
-                }
-            }
+                        println!("+Sz      -Max -T¦ rect+left/top border");
+                } else {println!("+Sz      -Max -T¦ rect+left     border (top will be removed due to !TOP_RESIZE_BORDER)");}
+            } else {    println!("-Sz      -Max +T¦ rect+left     border adj");}
         } else if style & WS_DLGFRAME == WS_DLGFRAME { // or is substituted by dlgFrame in win32's window box, which is an invisible border that does nothing
             let border_sizing = get_border_size(hwnd, true)?;
             offset.left = border_sizing.0; // ←left: always offset
 
             if style & WS_CAPTION != WS_CAPTION {            // no caption (≝title+border) exists
-                if win_flags.contains(WindowFlags::TITLE_BAR) {tracing::warn!("Window has no title bar, but is configured to have it");}
+                if win_flags.contains(WindowFlags::TITLE_BAR) {tracing::warn!("Window has no title bar, but is configured to have it");println!("✗✗✗ MISMATCH Title bar");}
                 if win_flags.contains(WindowFlags::TOP_RESIZE_BORDER) { // top resize border is NOT removed "manually"
                     offset.top  = border_sizing.0  ; // ↑top: offset if no title bar (border is now visible)
-                }
-            }
-        }
-    }
+                        println!("+Sz +Dlg -Max -T¦ rect+left/top border");
+                } else {println!("+Sz +Dlg -Max -T¦ rect+left     border (top will be removed due to !TOP_RESIZE_BORDER)");}
+            } else {    println!("-Sz +Dlg -Max +T¦ but NO sizebox, util::WindowArea::Outer");}
+        } else     {    println!("-Sz -Dlg -Max   ¦ but NO sizebox/dlg, util::WindowArea::Outer");}
+    } else     {        println!("       +Max");}
+    println!("returning pos {} {}", offset.left, offset.top);
     offset.right  = offset.left; // resize borders are the same
     offset.bottom = offset.left;
     Ok(offset)
