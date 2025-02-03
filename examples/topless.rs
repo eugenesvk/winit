@@ -268,6 +268,7 @@ use winit::platform::windows::WindowAttributesExtWindows;
 #[cfg(windows_platform)]
 use winit::platform::windows::WindowExtWindows;
 #[cfg(windows_platform)]
+use winit::platform::windows::Color;
 impl ApplicationHandler for Application {
     fn can_create_surfaces(&mut self, event_loop: &dyn ActiveEventLoop) {
         let x = 0; let y = 0;
@@ -278,6 +279,7 @@ impl ApplicationHandler for Application {
             // .with_titlebar(false) //         titlebar          ≝true
             .with_resizable(true) //         resizable         ≝true
             .with_surface_size(dpi::Size::Logical(dpi::LogicalSize::new(400.,150.)))
+            .with_border_color(Some(Color::from_rgb(0xff,0,0)))
             // .with_top_resize_border(false) // top_resize_border ≝true
             // .with_position(dpi::Position::Logical(dpi::LogicalPosition::new(0.0, -7.0)));
             .with_position(dpi::Position::Physical(dpi::PhysicalPosition::new(x, y)))
