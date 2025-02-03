@@ -1175,3 +1175,24 @@ mod tests {
         is_partial_eq::<Position>();
     }
 }
+
+/// The physical distance between the edges of two rectangles.
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+pub struct PhysicalInsets<P> {
+    /// The distance to the top edge.
+    pub top: P,
+    /// The distance to the left edge.
+    pub left: P,
+    /// The distance to the bottom edge.
+    pub bottom: P,
+    /// The distance to the right edge.
+    pub right: P,
+}
+
+impl<P> PhysicalInsets<P> {
+    #[inline]
+    pub const fn new(top: P, left: P, bottom: P, right: P) -> Self {
+        Self { top, left, bottom, right }
+    }
+}
