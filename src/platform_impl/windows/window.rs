@@ -457,11 +457,10 @@ impl CoreWindow for Window {
 
     // TODO: limit to Windows 10 (and maybe 11?)
     fn outer_position(&self) -> Result<PhysicalPosition<i32>, RequestError> {
-        let win_flags = self.window_state_lock().window_flags;
         util::WindowArea::Outer
             .get_rect(self.hwnd())
             .map(|rect| {
-                if let Ok(offset) = util::get_offset_resize_border(self.hwnd(), win_flags) {
+                if let Ok(offset) = util::get_offset_resize_border(self.hwnd(), self.window_state_lock().window_flags) {
                     Ok(PhysicalPosition::new(rect.left + offset.left, rect.top + offset.top))
                 } else {
                     Ok(PhysicalPosition::new(rect.left              , rect.top             ))
