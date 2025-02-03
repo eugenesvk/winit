@@ -444,6 +444,7 @@ impl CoreWindow for Window {
 
     fn pre_present_notify(&self) {}
 
+    // TODO: limit to Windows 10 (and maybe 11?)
     fn outer_position(&self) -> Result<PhysicalPosition<i32>, RequestError> {
         util::WindowArea::Outer
             .get_rect(self.hwnd())
@@ -471,6 +472,7 @@ impl CoreWindow for Window {
         PhysicalPosition::new(rect.left, rect.top)
     }
 
+    // TODO: limit to Windows 10 (and maybe 11?)
     fn set_outer_position(&self, position: Position) {
         let (x, y): (i32, i32) = position.to_physical::<i32>(self.scale_factor()).into();
         let (x_off, y_off) = if let Ok(offset) = util::get_offset_resize_border(self.hwnd(), self.window_state_lock().window_flags) {

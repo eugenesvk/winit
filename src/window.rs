@@ -188,6 +188,7 @@ impl WindowAttributes {
     ///   that appears when a window has no title bar) on Windows 10.
     /// - **X11:** The top left corner of the window, the window's "outer" position.
     /// - **Others:** Ignored.
+    // TODO: document Windows 11 if it's also part of the limit?
     #[inline]
     pub fn with_position<P: Into<Position>>(mut self, position: P) -> Self {
         self.position = Some(position.into());
@@ -618,6 +619,7 @@ pub trait Window: AsAny + Send + Sync {
     /// - **Windows:** Ignores the invisible resize borders (as well as the top visible resize border
     ///   that appears when if a window has no title bar) on Windows 10.
     /// - **Android / Wayland:** Always returns [`RequestError::NotSupported`].
+    // TODO: document Windows 11 if it's also part of the limit?
     fn outer_position(&self) -> Result<PhysicalPosition<i32>, RequestError>;
 
     /// Sets the position of the window on the desktop.
