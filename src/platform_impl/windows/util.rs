@@ -84,7 +84,7 @@ impl WindowArea {
 }
 
 use windows_sys::Win32::UI::WindowsAndMessaging::{
-    AdjustWindowRectEx, WS_BORDER, WS_CLIPSIBLINGS, WS_EX_WINDOWEDGE, WS_EX_ACCEPTFILES, WS_SIZEBOX, WS_CAPTION, WS_SYSMENU,
+    AdjustWindowRectEx, WS_BORDER, WS_CLIPSIBLINGS, WS_EX_WINDOWEDGE, WS_EX_ACCEPTFILES, WS_SIZEBOX, WS_CAPTION, WS_SYSMENU, WS_DLGFRAME,
 };
 use windows_sys::Win32::Foundation::FALSE;
 
