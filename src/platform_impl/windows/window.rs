@@ -42,7 +42,7 @@ use windows_sys::Win32::UI::WindowsAndMessaging::{
     HTTOPLEFT, HTTOPRIGHT, MENU_ITEM_STATE, MFS_DISABLED, MFS_ENABLED, MF_BYCOMMAND, NID_READY,
     PM_NOREMOVE, SC_CLOSE, SC_MAXIMIZE, SC_MINIMIZE, SC_MOVE, SC_RESTORE, SC_SIZE, SM_DIGITIZER,
     SWP_ASYNCWINDOWPOS, SWP_NOACTIVATE, SWP_NOSIZE, SWP_NOZORDER, TPM_LEFTALIGN, TPM_RETURNCMD,
-    WDA_EXCLUDEFROMCAPTURE, WDA_NONE, WM_NCLBUTTONDOWN, WM_SYSCOMMAND, WNDCLASSEXW
+    WDA_EXCLUDEFROMCAPTURE, WDA_NONE, WM_NCLBUTTONDOWN, WM_SYSCOMMAND, WNDCLASSEXW,
 };
 
 use crate::cursor::Cursor;
@@ -449,10 +449,13 @@ impl CoreWindow for Window {
         util::WindowArea::Outer
             .get_rect(self.hwnd())
             .map(|rect| {
-                if let Ok(offset) = util::get_offset_resize_border(self.hwnd(), self.window_state_lock().window_flags) {
+                if let Ok(offset) = util::get_offset_resize_border(
+                    self.hwnd(),
+                    self.window_state_lock().window_flags,
+                ) {
                     Ok(PhysicalPosition::new(rect.left + offset.left, rect.top + offset.top))
                 } else {
-                    Ok(PhysicalPosition::new(rect.left              , rect.top             ))
+                    Ok(PhysicalPosition::new(rect.left, rect.top))
                 }
             })
             .expect(
@@ -475,10 +478,12 @@ impl CoreWindow for Window {
     // TODO: limit to Windows 10 (and maybe 11?)
     fn set_outer_position(&self, position: Position) {
         let (x, y): (i32, i32) = position.to_physical::<i32>(self.scale_factor()).into();
-        let (x_off, y_off) = if let Ok(offset) = util::get_offset_resize_border(self.hwnd(), self.window_state_lock().window_flags) {
+        let (x_off, y_off) = if let Ok(offset) =
+            util::get_offset_resize_border(self.hwnd(), self.window_state_lock().window_flags)
+        {
             (offset.left, offset.top)
         } else {
-            (0,0)
+            (0, 0)
         };
 
         let window_state = Arc::clone(&self.window_state);

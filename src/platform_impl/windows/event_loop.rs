@@ -1144,7 +1144,8 @@ unsafe fn public_window_callback_inner(
                 && !window_flags.contains(WindowFlags::TITLE_BAR)
                 && !window_flags.contains(WindowFlags::TOP_RESIZE_BORDER)
                 && window_flags.contains(WindowFlags::RESIZABLE)
-                && !util::is_maximized(window) // max wins have no borders
+                && !util::is_maximized(window)
+            // max wins have no borders
             {
                 result = ProcResult::DefWindowProc(wparam);
                 let rect = unsafe { &mut *(lparam as *mut RECT) };

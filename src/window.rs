@@ -616,8 +616,8 @@ pub trait Window: AsAny + Send + Sync {
     /// ## Platform-specific
     ///
     /// - **Web:** Returns the top-left coordinates relative to the viewport.
-    /// - **Windows:** Ignores the invisible resize borders (as well as the top visible resize border
-    ///   that appears when if a window has no title bar) on Windows 10.
+    /// - **Windows:** Ignores the invisible resize borders (as well as the top visible resize
+    ///   border that appears when if a window has no title bar) on Windows 10.
     /// - **Android / Wayland:** Always returns [`RequestError::NotSupported`].
     // TODO: document Windows 11 if it's also part of the limit?
     fn outer_position(&self) -> Result<PhysicalPosition<i32>, RequestError>;
