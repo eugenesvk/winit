@@ -97,18 +97,16 @@ use windows_sys::Win32::UI::WindowsAndMessaging::{
 };
 use windows_sys::Win32::Foundation::FALSE;
 
-/// Get "universal" sizes for the invisible resize and visible thin borders without having to
-/// carefully adjust the actual styles of a real window (since, e.g., removing a single `WS_BORDER` style may lead to other changes, thus making the diff of the new rect vs. the old rect come up with incorrect estimate for the thin border that `WS_BORDER` sets
-/// `hwnd` is only used for DPI adjustment
-pub fn get_border_resize(hwnd: HWND, border: Border) -> Result<i32, io::Error> {
-    let style    = match border {
-      Border::Size    => WS_SIZEBOX | WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU,
-      Border::Thin    =>              WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU,
-    };
-    let style_no = match border {
-      Border::Size    =>              WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU,
-      Border::Thin    =>                          WS_CLIPSIBLINGS | WS_SYSMENU,
-    };
+/// Get sizes for the invisible resize (`sizing`=`true`) or visible thin borders without having to
+/// carefully adjust the actual styles of a real window (since, e.g., removing a single `WS_BORDER`
+/// style may lead to other style changes being applied automatically depending on the style combinations,
+/// thus resulting in an incorrect estimate for the thin border that `WS_BORDER` sets)
+/// `hwnd` is only used for DPI adjustment.
+pub fn get_border_size(hwnd: HWND, sizing: bool) -> Result<i32, io::Error> {
+    let style    = if sizing { WS_SIZEBOX | WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU
+    } else {                                WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU};
+    let style_no = if sizing {              WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU
+    } else {                                            WS_CLIPSIBLINGS | WS_SYSMENU};
     let style_ex = WS_EX_WINDOWEDGE | WS_EX_ACCEPTFILES;
     let mut rect_style   : RECT = unsafe{mem::zeroed()};
     let mut rect_style_no: RECT = unsafe{mem::zeroed()};
