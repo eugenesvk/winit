@@ -38,6 +38,10 @@ with it, the migration guide should be added below the entry, like:
 ```
 outer_position
  fn set_outer_position(&self, position: Position);
+- how to add automatic tests:
+  - set window styles (use topless combo of 3)
+  - position it at 25,25
+  - verify that it's actually there (and account for the visible resize border)
 - test with a window with visible resize borders: add a detection mechanism for visibility first
   - use Windows OS version to gate that otherwise it seems like there is no way to check?
   - or detect whether a pixel within WS_THICKFRAME is visible or transparent based on some screen API?
