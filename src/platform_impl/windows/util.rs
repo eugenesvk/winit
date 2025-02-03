@@ -82,6 +82,37 @@ impl WindowArea {
     }
 }
 
+use windows_sys::Win32::UI::WindowsAndMessaging::{
+    AdjustWindowRectEx, WS_BORDER, WS_CLIPSIBLINGS, WS_EX_WINDOWEDGE, WS_EX_ACCEPTFILES, WS_SIZEBOX, WS_CAPTION, WS_SYSMENU, WS_DLGFRAME,
+};
+use windows_sys::Win32::Foundation::FALSE;
+
+/// Get sizes for the invisible resize (`sizing`=`true`) or visible thin borders without having to
+/// carefully adjust the actual styles of a real window (since, e.g., removing a single `WS_BORDER`
+/// style may lead to other style changes being applied automatically depending on the style combinations,
+/// thus resulting in an incorrect estimate for the thin border that `WS_BORDER` sets)
+/// `hwnd` is only used for DPI adjustment.
+pub fn get_border_size(hwnd: HWND, sizing: bool) -> Result<dpi::PhysicalUnit<i32>, io::Error> {
+    let style    = if sizing { WS_SIZEBOX | WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU
+    } else {                                WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU};
+    let style_no = if sizing {              WS_BORDER | WS_CLIPSIBLINGS | WS_SYSMENU
+    } else {                                            WS_CLIPSIBLINGS | WS_SYSMENU};
+    let style_ex = WS_EX_WINDOWEDGE | WS_EX_ACCEPTFILES;
+    let mut rect_style   : RECT = unsafe{mem::zeroed()};
+    let mut rect_style_no: RECT = unsafe{mem::zeroed()};
+    win_to_err(unsafe{
+        if let (Some(get_dpi_for_window), Some(adjust_window_rect_ex_for_dpi)) =
+            (*GET_DPI_FOR_WINDOW, *ADJUST_WINDOW_RECT_EX_FOR_DPI)
+        {  let dpi = {get_dpi_for_window(hwnd)};
+            adjust_window_rect_ex_for_dpi(&mut rect_style   , style   , FALSE, style_ex, dpi);
+            adjust_window_rect_ex_for_dpi(&mut rect_style_no, style_no, FALSE, style_ex, dpi)
+        } else {
+            AdjustWindowRectEx           (&mut rect_style   , style   , FALSE, style_ex     );
+            AdjustWindowRectEx           (&mut rect_style_no, style_no, FALSE, style_ex     )
+        }
+    })?;
+    Ok(dpi::PhysicalUnit(rect_style_no.left - rect_style.left))
+}
 pub fn is_maximized(window: HWND) -> bool {
     unsafe {
         let mut placement: WINDOWPLACEMENT = mem::zeroed();
