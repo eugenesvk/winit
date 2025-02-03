@@ -458,28 +458,15 @@ impl CoreWindow for Window {
     // TODO: limit to Windows 10 (and maybe 11?)
     // impl CoreWindow for Window {
     fn outer_position(&self) -> Result<PhysicalPosition<i32>, RequestError> {
-        let window_flags = self.window_state_lock().window_flags;
+        let win_flags = self.window_state_lock().window_flags;
         util::WindowArea::Outer
             .get_rect(self.hwnd())
             .map(|rect| {
-                let mut border_left = 0;
-                let mut border_top  = 0;
-                if window_flags.contains(WindowFlags::RESIZABLE) //offset resize border if exists
-                && !util::is_maximized(self.hwnd()) // max wins have no borders
-                    {
-                    let mut style = unsafe{GetWindowLongW(self.hwnd(), GWL_STYLE) as u32};
-                    if style & WS_SIZEBOX == WS_SIZEBOX { // guard against actual style not matching config flags
-                        let border_sizing = if let Ok(sz) = util::get_border_size(self.hwnd(), true) {
-                            sz } else { 0 };
-                        border_left = border_sizing; // ←left: always
-                        if !window_flags.contains(WindowFlags::TITLE_BAR) {
-                            border_top  = border_sizing  ; // ↑top: if no title bar (border is now visible)
-                                println!("↖{}={}+{} ¦ {}={}+{} @outer_position, resizable, rect+left/top border"    ,rect.left+border_left,rect.left,border_left, rect.top+border_top,rect.top,border_top);
-                        } else {println!("↖{}={}+{} ¦ {}       @outer_position, resizable, rect+left     border adj",rect.left+border_left,rect.left,border_left, rect.top                               );}
-                    } else     {println!("↖{}       ¦ {}       @outer_position, resizable but NO sizebox, util::WindowArea::Outer" ,rect.left                   , rect.top                               );}
-                } else     {    println!("↖{}       ¦ {}       @outer_position, resizable, util::WindowArea::Outer" ,rect.left                                  , rect.top                               );}
-                println!("returning pos {} {}",rect.left + border_left, rect.top + border_top);
-                Ok(PhysicalPosition::new(rect.left + border_left, rect.top + border_top))
+                if let Ok(offset) = util::get_offset_resize_border(self.hwnd(), win_flags) {
+                    Ok(PhysicalPosition::new(rect.left + offset.left, rect.top + offset.top))
+                } else {
+                    Ok(PhysicalPosition::new(rect.left              , rect.top             ))
+                }
             })
             .expect(
                 "Unexpected GetWindowRect failure; please report this error to \

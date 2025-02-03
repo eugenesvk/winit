@@ -20,7 +20,7 @@ use windows_sys::Win32::UI::WindowsAndMessaging::{
     IsIconic, ShowCursor, IDC_APPSTARTING, IDC_ARROW, IDC_CROSS, IDC_HAND, IDC_HELP, IDC_IBEAM,
     IDC_NO, IDC_SIZEALL, IDC_SIZENESW, IDC_SIZENS, IDC_SIZENWSE, IDC_SIZEWE, IDC_WAIT,
     SM_CXVIRTUALSCREEN, SM_CYVIRTUALSCREEN, SM_XVIRTUALSCREEN, SM_YVIRTUALSCREEN, SW_MAXIMIZE,
-    WINDOWPLACEMENT,
+    WINDOWPLACEMENT, GWL_STYLE, GetWindowLongW,
 };
 
 use crate::utils::Lazy;
@@ -124,6 +124,31 @@ pub fn get_border_resize(hwnd: HWND, border: Border) -> Result<i32, io::Error> {
         }
     })?;
     Ok(rect_style_no.left - rect_style.left)
+}
+
+use crate::platform_impl::windows::window_state::WindowFlags;
+/// Get the size of the resize borders as an offset in physical coordinates.
+pub fn get_offset_resize_border(hwnd: HWND, win_flags: WindowFlags) -> Result<dpi::PhysicalInsets<i32>, io::Error> {
+    // todo: rely on actual window styles only, ignore "desires" expressed in win_flags?
+    let mut offset = dpi::PhysicalInsets::new(0, 0, 0, 0);
+
+    if win_flags.contains(WindowFlags::RESIZABLE) // if resize borders should exist
+    && !is_maximized(hwnd)                        // ...and are not pushed off-screen
+        {let style = unsafe{GetWindowLongW(hwnd, GWL_STYLE) as u32};
+        if style & WS_SIZEBOX == WS_SIZEBOX {     // ...and actually exist
+            let border_sizing = get_border_size(hwnd, true)?;
+            offset.left = border_sizing; // ←left: always
+            if !win_flags.contains(WindowFlags::TITLE_BAR)
+            && style & WS_CAPTION != WS_CAPTION {
+                offset.top  = border_sizing  ; // ↑top: if no title bar (border is now visible)
+                    println!("✓(reSz !Max), rect+left/top border"                  );
+            } else {println!("✓(reSz !Max), rect+left     border adj"              );}
+        } else     {println!("✓(reSz !Max) but NO sizebox, util::WindowArea::Outer");}
+    } else     {    println!("(reSz !Max), util::WindowArea::Outer"               );}
+    println!("returning pos {} {}", offset.left, offset.top);
+    offset.right  = offset.left; // resize borders are the same
+    offset.bottom = offset.left;
+    Ok(offset)
 }
 
 pub fn is_maximized(window: HWND) -> bool {
