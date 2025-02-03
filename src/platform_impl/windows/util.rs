@@ -127,8 +127,10 @@ pub fn get_offset_resize_border(hwnd: HWND, win_flags: WindowFlags) -> Result<dp
         if style & WS_SIZEBOX == WS_SIZEBOX {     // ...and actually exist
             let border_sizing = get_border_size(hwnd, true)?;
             offset.left = border_sizing; // ←left: always
-            if !win_flags.contains(WindowFlags::TITLE_BAR)
-            && style & WS_CAPTION != WS_CAPTION {
+
+            if !win_flags.contains(WindowFlags::TITLE_BAR) // no title bar should exist
+            && style & WS_CAPTION != WS_CAPTION            // no caption (≝title+border) exists
+            && win_flags.contains(WindowFlags::TOP_RESIZE_BORDER) { // top resize border is NOT removed "manually"
                 offset.top  = border_sizing  ; // ↑top: if no title bar (border is now visible)
                     println!("✓(reSz !Max), rect+left/top border"                  );
             } else {println!("✓(reSz !Max), rect+left     border adj"              );}
