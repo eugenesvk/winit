@@ -122,12 +122,12 @@ pub fn get_offset_resize_border(hwnd: HWND, win_flags: WindowFlags) -> Result<dp
     if !is_maximized(hwnd) {                           // resize borders not pushed off-screen
         let style = unsafe{GetWindowLongW(hwnd, GWL_STYLE) as u32};
         if style & WS_SIZEBOX == WS_SIZEBOX {          // ...actually exist
-            if !win_flags.contains(WindowFlags::RESIZABLE) {tracing::warn!("Window has resize borders, but is configured not to have them");}
+            if !win_flags.contains(WindowFlags::RESIZABLE) {tracing::debug!("Window has resize borders, but is configured not to have them");}
             let border_sizing = get_border_size(hwnd, true)?;
             offset.left = border_sizing.0; // ←left: always offset
 
             if style & WS_CAPTION != WS_CAPTION {            // no caption (≝title+border) exists
-                if win_flags.contains(WindowFlags::TITLE_BAR) {tracing::warn!("Window has no title bar, but is configured to have it");}
+                if win_flags.contains(WindowFlags::TITLE_BAR) {tracing::debug!("Window has no title bar, but is configured to have it");}
                 if win_flags.contains(WindowFlags::TOP_RESIZE_BORDER) { // top resize border is NOT removed "manually"
                     offset.top  = border_sizing.0  ; // ↑top: offset if no title bar (border is now visible)
                 }
@@ -137,7 +137,7 @@ pub fn get_offset_resize_border(hwnd: HWND, win_flags: WindowFlags) -> Result<dp
             offset.left = border_sizing.0; // ←left: always offset
 
             if style & WS_CAPTION != WS_CAPTION {            // no caption (≝title+border) exists
-                if win_flags.contains(WindowFlags::TITLE_BAR) {tracing::warn!("Window has no title bar, but is configured to have it");}
+                if win_flags.contains(WindowFlags::TITLE_BAR) {tracing::debug!("Window has no title bar, but is configured to have it");}
                 if win_flags.contains(WindowFlags::TOP_RESIZE_BORDER) { // top resize border is NOT removed "manually"
                     offset.top  = border_sizing.0  ; // ↑top: offset if no title bar (border is now visible)
                 }
