@@ -36,8 +36,6 @@ with it, the migration guide should be added below the entry, like:
   // Code snippet.
 
 ```
-outer_position
- fn set_outer_position(&self, position: Position);
 - how to add automatic tests:
   - set window styles (use topless combo of 3)
   - position it at 25,25
