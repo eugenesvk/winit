@@ -367,7 +367,7 @@ impl ApplicationHandler for Application {
                         Key::Character("1") => {win.set_outer_position(dpi::Position::Physical(dpi::PhysicalPosition::new( 0,0),));info!("set outer position to  0,0")},
                         Key::Character("2") => {win.set_outer_position(dpi::Position::Physical(dpi::PhysicalPosition::new( -9, -9),));info!("set outer position to - 9,- 9")},
                         Key::Character("3") => {win.set_outer_position(dpi::Position::Physical(dpi::PhysicalPosition::new(-10,-10),));info!("set outer position to -10,-10")},
-                        Key::Character("4") => {win.set_outer_position(dpi::Position::Physical(dpi::PhysicalPosition::new(50,0),));info!("set outer position to 50,0")},
+                        Key::Character("4") => {win.set_outer_position(dpi::Position::Physical(dpi::PhysicalPosition::new(25,25),));info!("set outer position to 25,25")},
 
                         Key::Character("q") => {
                             win.set_titlebar(true);
