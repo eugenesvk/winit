@@ -20,7 +20,7 @@ use windows_sys::Win32::UI::WindowsAndMessaging::{
     IsIconic, ShowCursor, IDC_APPSTARTING, IDC_ARROW, IDC_CROSS, IDC_HAND, IDC_HELP, IDC_IBEAM,
     IDC_NO, IDC_SIZEALL, IDC_SIZENESW, IDC_SIZENS, IDC_SIZENWSE, IDC_SIZEWE, IDC_WAIT,
     SM_CXVIRTUALSCREEN, SM_CYVIRTUALSCREEN, SM_XVIRTUALSCREEN, SM_YVIRTUALSCREEN, SW_MAXIMIZE,
-    WINDOWPLACEMENT,
+    WINDOWPLACEMENT, GWL_STYLE, GetWindowLongW,
 };
 
 use crate::utils::Lazy;
@@ -113,6 +113,42 @@ pub fn get_border_size(hwnd: HWND, sizing: bool) -> Result<dpi::PhysicalUnit<i32
     })?;
     Ok(dpi::PhysicalUnit(rect_style_no.left - rect_style.left))
 }
+
+use crate::platform_impl::windows::window_state::WindowFlags;
+/// Get the size of the resize borders as an offset in physical coordinates. Takes into account various
+/// window styles to only return offset if it would prevent placing a 0,0 window in the screen's corner
+pub fn get_offset_resize_border(hwnd: HWND, win_flags: WindowFlags) -> Result<dpi::PhysicalInsets<i32>, io::Error> {
+    let mut offset = dpi::PhysicalInsets::new(0, 0, 0, 0);
+    if !is_maximized(hwnd) {                           // resize borders not pushed off-screen
+        let style = unsafe{GetWindowLongW(hwnd, GWL_STYLE) as u32};
+        if style & WS_SIZEBOX == WS_SIZEBOX {          // ...actually exist
+            if !win_flags.contains(WindowFlags::RESIZABLE) {tracing::warn!("Window has resize borders, but is configured not to have them");}
+            let border_sizing = get_border_size(hwnd, true)?;
+            offset.left = border_sizing.0; // ←left: always offset
+
+            if style & WS_CAPTION != WS_CAPTION {            // no caption (≝title+border) exists
+                if win_flags.contains(WindowFlags::TITLE_BAR) {tracing::warn!("Window has no title bar, but is configured to have it");}
+                if win_flags.contains(WindowFlags::TOP_RESIZE_BORDER) { // top resize border is NOT removed "manually"
+                    offset.top  = border_sizing.0  ; // ↑top: offset if no title bar (border is now visible)
+                }
+            }
+        } else if style & WS_DLGFRAME == WS_DLGFRAME { // or is substituted by dlgFrame in win32's window box, which is an invisible border that does nothing
+            let border_sizing = get_border_size(hwnd, true)?;
+            offset.left = border_sizing.0; // ←left: always offset
+
+            if style & WS_CAPTION != WS_CAPTION {            // no caption (≝title+border) exists
+                if win_flags.contains(WindowFlags::TITLE_BAR) {tracing::warn!("Window has no title bar, but is configured to have it");}
+                if win_flags.contains(WindowFlags::TOP_RESIZE_BORDER) { // top resize border is NOT removed "manually"
+                    offset.top  = border_sizing.0  ; // ↑top: offset if no title bar (border is now visible)
+                }
+            }
+        }
+    }
+    offset.right  = offset.left; // resize borders are the same
+    offset.bottom = offset.left;
+    Ok(offset)
+}
+
 pub fn is_maximized(window: HWND) -> bool {
     unsafe {
         let mut placement: WINDOWPLACEMENT = mem::zeroed();
