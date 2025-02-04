@@ -75,9 +75,14 @@ use windows_sys::Win32::UI::WindowsAndMessaging::{
 };
 use windows_sys::Win32::Foundation::{POINT, RECT};
 use windows_sys::Win32::Foundation::{BOOL, HWND, NTSTATUS, S_OK, FALSE};
+use windows_sys::core::{HRESULT};
 pub fn win_to_err(result:BOOL) -> Result<(), io::Error> {
     if result != false.into() {Ok(())
     } else                    {Err(io::Error::last_os_error())}
+}
+pub fn win_res_to_err(result:HRESULT) -> Result<(), io::Error> {
+    if result == S_OK {Ok(())
+    } else            {Err(io::Error::last_os_error())}
 }
 use indexmap::IndexMap;
 pub fn get_ws_style_s(style_in:u32) -> String {
