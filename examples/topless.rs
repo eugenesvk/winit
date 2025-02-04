@@ -263,7 +263,7 @@ pub fn get_win_info(win_id:HWND) -> Result<WINDOWINFO , io::Error> {
     win_to_err(unsafe{GetWindowInfo(win_id, &mut win_info)})?;
     Ok(win_info)
 }
-use windows_sys::Win32::Graphics::Dwm::{DwmGetWindowAttribute,DWMWA_EXTENDED_FRAME_BOUNDS};
+use windows_sys::Win32::Graphics::Dwm::{DwmGetWindowAttribute,DWMWA_EXTENDED_FRAME_BOUNDS, DWMWA_CAPTION_BUTTON_BOUNDS,};
 use std::ffi::c_void;
 pub fn get_win_ext_frame(win_id:HWND) -> Result<RECT, io::Error> {
     // learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
@@ -283,6 +283,16 @@ pub fn get_win_ext_frame(win_id:HWND) -> Result<RECT, io::Error> {
     win_res_to_err(unsafe{DwmGetWindowAttribute(win_id, DWMWA_EXTENDED_FRAME_BOUNDS as u32, win_attr_ext_frame_ptr as *mut c_void, sz_attr)})?;
     win_attr_ext_frame = *unsafe{Box::from_raw(win_attr_ext_frame_ptr)};
     Ok(win_attr_ext_frame)
+}
+pub fn get_win_capt_button(win_id:HWND) -> Result<RECT, io::Error> {
+    // learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+    // DWMWA_CAPTION_BUTTON_BOUNDS RECT Bounds of the caption button area in the window-relative space. If the window is minimized or otherwise not visible to the user, then the value of the RECT retrieved is undefined. You should check whether the retrieved RECT contains a boundary that you can work with, and if it doesn't then you can conclude that the window is minimized or otherwise not visible
+    let mut win_attr_capt_btn_frame = unsafe{mem::zeroed()};
+    let win_attr_capt_btn_frame_ptr = Box::into_raw(Box::new(win_attr_capt_btn_frame));
+    let sz_attr = mem::size_of::<RECT>() as u32;
+    win_res_to_err(unsafe{DwmGetWindowAttribute(win_id, DWMWA_CAPTION_BUTTON_BOUNDS as u32, win_attr_capt_btn_frame_ptr as *mut c_void, sz_attr)})?;
+    win_attr_capt_btn_frame = *unsafe{Box::from_raw(win_attr_capt_btn_frame_ptr)};
+    Ok(win_attr_capt_btn_frame)
 }
 
 use winit::event::ElementState;
