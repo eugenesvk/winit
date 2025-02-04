@@ -263,6 +263,27 @@ pub fn get_win_info(win_id:HWND) -> Result<WINDOWINFO , io::Error> {
     win_to_err(unsafe{GetWindowInfo(win_id, &mut win_info)})?;
     Ok(win_info)
 }
+use windows_sys::Win32::Graphics::Dwm::{DwmGetWindowAttribute,DWMWA_EXTENDED_FRAME_BOUNDS};
+use std::ffi::c_void;
+pub fn get_win_ext_frame(win_id:HWND) -> Result<RECT, io::Error> {
+    // learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+    // DWMWA_EXTENDED_FRAME_BOUNDS RECT Extended frame bounds rectangle in screen space (physical?)
+    // DWMWA_CAPTION_BUTTON_BOUNDS RECT Bounds of the caption button area in the window-relative space. If the window is minimized or otherwise not visible to the user, then the value of the RECT retrieved is undefined. You should check whether the retrieved RECT contains a boundary that you can work with, and if it doesn't then you can conclude that the window is minimized or otherwise not visible
+    // win11b22000 DWMWA_VISIBLE_FRAME_BORDER_THICKNESS  Retrieves the width of the outer border that the DWM would draw around this window. The value can vary depending on the DPI of the window. The pvAttribute parameter points to a value of type UINT.
+
+    // pub unsafe extern "system" fn DwmGetWindowAttribute(
+      // hwnd: HWND,  handle to the window from which the attribute value is to be retrieved
+      // dwattribute: u32,  flag describing which value to retrieve, specified as a value of the DWMWINDOWATTRIBUTE enumeration. This parameter specifies which attribute to retrieve, and the pvAttribute parameter points to an object into which the attribute value is retrieved
+      // pvattribute: *mut c_void, A pointer to a value which, when this function returns successfully, receives the current value of the attribute. The type of the retrieved value depends on the value of the dwAttribute parameter. The DWMWINDOWATTRIBUTE enumeration topic indicates, in the row for each flag, what type of value you should pass a pointer to in the pvAttribute parameter
+      // cbattribute: u32, size, in bytes, of the attribute value being received via the pvAttribute parameter. The type of the retrieved value, and therefore its size in bytes, depends on the value of the dwAttribute parameter
+    // ) -> HRESULT
+    let mut win_attr_ext_frame = unsafe{mem::zeroed()};
+    let win_attr_ext_frame_ptr = Box::into_raw(Box::new(win_attr_ext_frame));
+    let sz_attr = mem::size_of::<RECT>() as u32;
+    win_res_to_err(unsafe{DwmGetWindowAttribute(win_id, DWMWA_EXTENDED_FRAME_BOUNDS as u32, win_attr_ext_frame_ptr as *mut c_void, sz_attr)})?;
+    win_attr_ext_frame = *unsafe{Box::from_raw(win_attr_ext_frame_ptr)};
+    Ok(win_attr_ext_frame)
+}
 
 use winit::event::ElementState;
 use winit::keyboard::{Key, ModifiersState};
