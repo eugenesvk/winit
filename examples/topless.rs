@@ -370,6 +370,8 @@ impl ApplicationHandler for Application {
                             println!("   ←{: >2} ↑{: >2} →{: >2} ↓{: >2} client",rcClient.left,rcClient.top,rcClient.right,rcClient.bottom);
                             let win_ext_frame = get_win_ext_frame(win_id).unwrap();
                             println!("   ←{: >2} ↑{: >2} →{: >2} ↓{: >2} ext_frame",win_ext_frame.left,win_ext_frame.top,win_ext_frame.right,win_ext_frame.bottom);
+                            // let win_capt_btn = get_win_capt_button(win_id).unwrap();
+                            // println!("   ←{: >2} ↑{: >2} →{: >2} ↓{: >2} caption_button_frame (win coord)",win_capt_btn.left,win_capt_btn.top,win_capt_btn.right,win_capt_btn.bottom);
 // ✗title bar   ✓resize
 // cbSize=60b is_active=1 style=0x160f0000 style_ex=0x20040910 atomWindowType=50061 wCreatorVersion=1280
 // ↔10 ↕10 border px
