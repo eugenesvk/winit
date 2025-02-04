@@ -356,6 +356,8 @@ impl ApplicationHandler for Application {
                             if szbdL < 0 || szbdL as u32 != cxWindowBorders {println!("❓!!!!!   ∑BORDERS  don't match !!!!!❓");}
                             println!("   ←{: >2} ↑{: >2} →{: >2} ↓{: >2} window",rcWindow.left,rcWindow.top,rcWindow.right,rcWindow.bottom);
                             println!("   ←{: >2} ↑{: >2} →{: >2} ↓{: >2} client",rcClient.left,rcClient.top,rcClient.right,rcClient.bottom);
+                            let win_ext_frame = get_win_ext_frame(win_id).unwrap();
+                            println!("   ←{: >2} ↑{: >2} →{: >2} ↓{: >2} ext_frame",win_ext_frame.left,win_ext_frame.top,win_ext_frame.right,win_ext_frame.bottom);
 // ✗title bar   ✓resize
 // cbSize=60b is_active=1 style=0x160f0000 style_ex=0x20040910 atomWindowType=50061 wCreatorVersion=1280
 // ↔10 ↕10 border px
