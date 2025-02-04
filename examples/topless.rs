@@ -349,7 +349,9 @@ impl ApplicationHandler for Application {
                             let cyWindowBorders:u32            	= win_info.cyWindowBorders; //height of the window border, in pixels
                             let atomWindowType :u16            	= win_info.atomWindowType; //window class atom
                             let wCreatorVersion:u16            	= win_info.wCreatorVersion; //Windows version of the application that created the window
+                            let dwStyle_s = get_ws_style_s(dwStyle);
                             println!("ℹ  cbSize={cbSize}b is_active={is_active} style={dwStyle:#x} style_ex={dwExStyle:#x} atomWindowType={atomWindowType} wCreatorVersion={wCreatorVersion}");
+                            println!("   style={dwStyle_s}");
                             println!("   ↔{: >2} ↕{: >2} px border∑",cxWindowBorders,cyWindowBorders);
                             println!("   ↔{: >2} ↕{: >2} px borders",szL+bdL        , szT+bdT);
                             let szbdL = szL+bdL;
