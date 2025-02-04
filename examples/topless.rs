@@ -354,8 +354,8 @@ impl ApplicationHandler for Application {
                             println!("   ↔{: >2} ↕{: >2} px borders",szL+bdL        , szT+bdT);
                             let szbdL = szL+bdL;
                             if szbdL < 0 || szbdL as u32 != cxWindowBorders {println!("❓!!!!!   ∑BORDERS  don't match !!!!!❓");}
-                            println!("   ←{} ↑{} →{} ↓{} window",rcWindow.left,rcWindow.top,rcWindow.right,rcWindow.bottom);
-                            println!("   ←{} ↑{} →{} ↓{} client",rcClient.left,rcClient.top,rcClient.right,rcClient.bottom);
+                            println!("   ←{: >2} ↑{: >2} →{: >2} ↓{: >2} window",rcWindow.left,rcWindow.top,rcWindow.right,rcWindow.bottom);
+                            println!("   ←{: >2} ↑{: >2} →{: >2} ↓{: >2} client",rcClient.left,rcClient.top,rcClient.right,rcClient.bottom);
 // ✗title bar   ✓resize
 // cbSize=60b is_active=1 style=0x160f0000 style_ex=0x20040910 atomWindowType=50061 wCreatorVersion=1280
 // ↔10 ↕10 border px
