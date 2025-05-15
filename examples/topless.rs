@@ -93,7 +93,15 @@ impl ApplicationHandler for Application {
         };
         let _modi = ModifiersState::default();
         match event {
+            WindowEvent::ModifiersChanged(mods) => {
+                println!("{:?}",event);
+                // ModifiersChanged(Modifiers { state: ModifiersState(ALT), pressed_mods: ModifiersKeys(0x0) })
+                // window.modifiers = modifiers.state();
+                // info!("Modifiers changed to {:?}", window.modifiers);
+
+            },
             WindowEvent::KeyboardInput { event, .. } => {
+                println!("{:?}",event);
                 if event.state == ElementState::Pressed && !event.repeat {
                     match event.key_without_modifiers.as_ref() {
                         Key::Character("q") => {
