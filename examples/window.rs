@@ -18,14 +18,24 @@ mod tracing;
 struct App {
     window: Option<Box<dyn Window>>,
 }
+#[cfg(windows_platform)]
+use winit::platform::windows::WindowAttributesWindows;
 
+#[cfg(windows_platform)]
+use winit::platform::windows::Color;
 impl ApplicationHandler for App {
     fn can_create_surfaces(&mut self, event_loop: &dyn ActiveEventLoop) {
         #[cfg(not(web_platform))]
-        let window_attributes = WindowAttributes::default();
+        let _window_attributes = WindowAttributes::default();
         #[cfg(web_platform)]
         let window_attributes = WindowAttributes::default()
             .with_platform_attributes(Box::new(WindowAttributesWeb::default().with_append(true)));
+        #[cfg(windows_platform)]
+        let window_attributes = WindowAttributes::default()
+            .with_platform_attributes(Box::new(WindowAttributesWindows::default()
+                .with_border_color(Some(Color::from_rgb(255,0,0))) // clip_children ≝true
+                // .with_clip_children(false)
+                ));
         self.window = match event_loop.create_window(window_attributes) {
             Ok(window) => Some(window),
             Err(err) => {

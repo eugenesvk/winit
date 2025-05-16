@@ -1331,11 +1331,16 @@ unsafe fn init(
 ) -> Result<Window, RequestError> {
     let title = util::encode_wide(&attributes.title);
 
-    let win_attributes = attributes
+    let win_attributes1 = attributes
         .platform
-        .take()
-        .and_then(|attrs| attrs.cast::<WindowAttributesWindows>().ok())
+        .take();
+    println!("win_attributes1 {:?}", win_attributes1);
+    let win_attributes2 = win_attributes1
+        .and_then(|attrs| attrs.cast::<WindowAttributesWindows>().ok());
+    println!("win_attributes2 {:?}", win_attributes2);
+    let win_attributes = win_attributes2
         .unwrap_or_default();
+    println!("win_attributes {:?}", win_attributes);
 
     let class_name = util::encode_wide(&win_attributes.class_name);
     unsafe { register_window_class(&class_name) };
