@@ -41,8 +41,8 @@ pub fn mod_state_phys_s(mods:&Modifiers) -> String {
   if let ModifiersKeyState::Pressed = mods.rshift_state()     {s.push_str(" ⇧›")}else{s.push_str("  ")};
   if let ModifiersKeyState::Pressed = mods.lcontrol_state()   {s.push_str("‹⎈ ")}else{s.push_str("  ")};
   if let ModifiersKeyState::Pressed = mods.rcontrol_state()   {s.push_str(" ⎈›")}else{s.push_str("  ")};
-  if let ModifiersKeyState::Pressed = mods.lmeta_state()      {s.push_str("‹◆ ")}else{s.push_str("  ")};
-  if let ModifiersKeyState::Pressed = mods.rmeta_state()      {s.push_str(" ◆›")}else{s.push_str("  ")};
+  if let ModifiersKeyState::Pressed = mods.lsuper_state()     {s.push_str("‹◆ ")}else{s.push_str("  ")};
+  if let ModifiersKeyState::Pressed = mods.rsuper_state()     {s.push_str(" ◆›")}else{s.push_str("  ")};
   if let ModifiersKeyState::Pressed = mods.lalt_state()       {s.push_str("‹⎇ ")}else{s.push_str("  ")};
   if let ModifiersKeyState::Pressed = mods.ralt_state()       {s.push_str(" ⎇›")}else{s.push_str("  ")};
   s
