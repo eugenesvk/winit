@@ -69,12 +69,16 @@ pub fn ev_key_s(key:&KeyEvent) -> String {
     ElementState::Released  => {s.push('↑')},
   }
   if key.repeat {s.push('🔁')}else{s.push(' ')}; //𜱣⚛
-  if let PhysicalKey    ::Code        (key_code         ) = &key.physical_key   {s.push_str(&format!("{:?} "    ,key_code           ))};
-  if let PhysicalKey    ::Unidentified(key_code_native  ) = &key.physical_key   {s.push_str(&format!("�{:?} "   ,key_code_native    ))};
-  if let Key            ::Named       (key_named        ) = &key.logical_key    {s.push_str(&format!("{:?} "    ,key_named          ))};
-  if let Key            ::Character   (key_char         ) = &key.logical_key    {s.push_str(&format!("{} "      ,key_char           ))};
-  if let Key            ::Unidentified(key_native       ) = &key.logical_key    {s.push_str(&format!("�{:?} "   ,key_native         ))};
-  if let Key            ::Dead        (maybe_char       ) = &key.logical_key    {s.push_str(&format!("🕱{:?} "   ,maybe_char         ))};
+  match &key.physical_key {
+    PhysicalKey::Code        (key_code         ) => {s.push_str(&format!( "{:?} " ,key_code      ))},
+    PhysicalKey::Unidentified(key_code_native  ) => {s.push_str(&format!("�{:?} ",key_code_native))},
+  };
+  match &key.logical_key {
+    Key        ::Named       (key_named        ) => {s.push_str(&format!("{:?} "  ,key_named     ))},
+    Key        ::Character   (key_char         ) => {s.push_str(&format!("{} "    ,key_char      ))},
+    Key        ::Unidentified(key_native       ) => {s.push_str(&format!("�{:?} ",key_native    ))},
+    Key        ::Dead        (maybe_char       ) => {s.push_str(&format!("🕱{:?} " ,maybe_char    ))},
+  };
   match &key.location {
     KeyLocation::Standard   => {s.push('≝')},
     KeyLocation::Left       => {s.push('←')},
