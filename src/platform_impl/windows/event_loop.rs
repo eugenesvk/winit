@@ -2580,6 +2580,9 @@ unsafe fn handle_raw_input(userdata: &ThreadMsgTargetData, data: RAWINPUT) {
         let pressed = keyboard.Message == WM_KEYDOWN || keyboard.Message == WM_SYSKEYDOWN;
         let released = keyboard.Message == WM_KEYUP || keyboard.Message == WM_SYSKEYUP;
 
+        println!("WM_INPUT → handle_raw_input c={} VKey={} {} {}",
+            keyboard.MakeCode, keyboard.VKey,
+            if pressed{"↓"}else{""},if released{"↑"}else{""});
         if !pressed && !released {
             return;
         }
