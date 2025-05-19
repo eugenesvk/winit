@@ -276,7 +276,6 @@ impl LayoutCache {
 
     pub fn get_mods(&mut self) -> Modifiers {
         let (_, layout) = self.get_current_layout();
-        let filter_out_altgr = layout.has_alt_graph && key_pressed(VK_RMENU);
         let mut state = ModifiersState::empty();
         let mut pressed_mods = ModifiersKeys::empty();
 
@@ -288,16 +287,16 @@ impl LayoutCache {
                 || pressed_mods.contains(ModifiersKeys::RSHIFT),
         );
 
-        pressed_mods.set(ModifiersKeys::LCONTROL, key_pressed(VK_LCONTROL) && !filter_out_altgr);
-        pressed_mods.set(ModifiersKeys::RCONTROL, key_pressed(VK_RCONTROL) && !filter_out_altgr);
+        pressed_mods.set(ModifiersKeys::LCONTROL, key_pressed(VK_LCONTROL));
+        pressed_mods.set(ModifiersKeys::RCONTROL, key_pressed(VK_RCONTROL));
         state.set(
             ModifiersState::CONTROL,
             pressed_mods.contains(ModifiersKeys::LCONTROL)
                 || pressed_mods.contains(ModifiersKeys::RCONTROL),
         );
 
-        pressed_mods.set(ModifiersKeys::LALT, key_pressed(VK_LMENU) && !filter_out_altgr);
-        pressed_mods.set(ModifiersKeys::RALT, key_pressed(VK_RMENU) && !filter_out_altgr);
+        pressed_mods.set(ModifiersKeys::LALT, key_pressed(VK_LMENU));
+        pressed_mods.set(ModifiersKeys::RALT, key_pressed(VK_RMENU));
         state.set(
             ModifiersState::ALT,
             pressed_mods.contains(ModifiersKeys::LALT)
