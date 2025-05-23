@@ -64,7 +64,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         std::thread::spawn(move || {
             // Wake up the `event_loop` once every second and dispatch a custom event
             // from a different thread.
-            info!("Starting to send user event every second");
+            // info!("Starting to send user event every second");
             loop {
                 let _ = sender.send(Action::Message);
                 event_loop_proxy.wake_up();
@@ -114,7 +114,7 @@ impl Application {
         // WM.
         let icon = load_icon(include_bytes!("data/icon.png"));
 
-        info!("Loading cursor assets");
+        // info!("Loading cursor assets");
         let custom_cursors = [
             event_loop.create_custom_cursor(decode_cursor(include_bytes!("data/cross.png"))),
             event_loop.create_custom_cursor(decode_cursor(include_bytes!("data/cross2.png"))),
@@ -185,7 +185,7 @@ impl Application {
 
         let window_state = WindowState::new(self, window)?;
         let window_id = window_state.window.id();
-        info!("Created new window with id={window_id:?}");
+        // info!("Created new window with id={window_id:?}");
         self.windows.insert(window_id, window_state);
         Ok(window_id)
     }
@@ -195,7 +195,7 @@ impl Application {
             #[cfg(web_platform)]
             Action::DumpMonitors => self.dump_monitors(_event_loop),
             Action::Message => {
-                info!("User wake up");
+                // info!("User wake up");
             },
             _ => unreachable!("Tried to execute invalid action without `WindowId`"),
         }
@@ -209,7 +209,7 @@ impl Application {
     ) {
         // let cursor_position = self.cursor_position;
         let window = self.windows.get_mut(&window_id).unwrap();
-        info!("Executing action: {action:?}");
+        // info!("Executing action: {action:?}");
         match action {
             Action::CloseWindow => {
                 let _ = self.windows.remove(&window_id);
@@ -217,7 +217,7 @@ impl Application {
             Action::CreateNewWindow => {
                 #[cfg(any(x11_platform, wayland_platform))]
                 if let Err(err) = window.window.request_activation_token() {
-                    info!("Failed to get activation token: {err}");
+                    // info!("Failed to get activation token: {err}");
                 } else {
                     return;
                 }
@@ -313,47 +313,47 @@ impl Application {
     }
 
     fn dump_monitors(&self, event_loop: &dyn ActiveEventLoop) {
-        info!("Monitors information");
+        // info!("Monitors information");
         let primary_monitor = event_loop.primary_monitor();
         for monitor in event_loop.available_monitors() {
-            let intro = if primary_monitor.as_ref() == Some(&monitor) {
+            let _intro = if primary_monitor.as_ref() == Some(&monitor) {
                 "Primary monitor"
             } else {
                 "Monitor"
             };
 
-            if let Some(name) = monitor.name() {
-                info!("{intro}: {name}");
+            if let Some(_name) = monitor.name() {
+                // info!("{intro}: {name}");
             } else {
-                info!("{intro}: [no name]");
+                // info!("{intro}: [no name]");
             }
 
             if let Some(current_mode) = monitor.current_video_mode() {
-                let PhysicalSize { width, height } = current_mode.size();
-                let bits =
+                let PhysicalSize { width: _, height: _ } = current_mode.size();
+                let _bits =
                     current_mode.bit_depth().map(|bits| format!("x{bits}")).unwrap_or_default();
-                let m_hz = current_mode
+                let _m_hz = current_mode
                     .refresh_rate_millihertz()
                     .map(|m_hz| format!(" @ {}.{} Hz", m_hz.get() / 1000, m_hz.get() % 1000))
                     .unwrap_or_default();
-                info!("  {width}x{height}{bits}{m_hz}");
+                // info!("  {width}x{height}{bits}{m_hz}");
             }
 
-            if let Some(PhysicalPosition { x, y }) = monitor.position() {
-                info!("  Position: {x},{y}");
+            if let Some(PhysicalPosition { x: _, y: _ }) = monitor.position() {
+                // info!("  Position: {x},{y}");
             }
 
-            info!("  Scale factor: {}", monitor.scale_factor());
+            // info!("  Scale factor: {}", monitor.scale_factor());
 
-            info!("  Available modes (width x height x bit-depth):");
+            // info!("  Available modes (width x height x bit-depth):");
             for mode in monitor.video_modes() {
-                let PhysicalSize { width, height } = mode.size();
-                let bits = mode.bit_depth().map(|bits| format!("x{bits}")).unwrap_or_default();
-                let m_hz = mode
+                let PhysicalSize { width: _, height: _ } = mode.size();
+                let _bits = mode.bit_depth().map(|bits| format!("x{bits}")).unwrap_or_default();
+                let _m_hz = mode
                     .refresh_rate_millihertz()
                     .map(|m_hz| format!(" @ {}.{} Hz", m_hz.get() / 1000, m_hz.get() % 1000))
                     .unwrap_or_default();
-                info!("    {width}x{height}{bits}{m_hz}");
+                // info!("    {width}x{height}{bits}{m_hz}");
             }
         }
     }
@@ -420,16 +420,16 @@ impl ApplicationHandler for Application {
             },
             WindowEvent::Focused(focused) => {
                 if focused {
-                    info!("Window={window_id:?} focused");
+                    // info!("Window={window_id:?} focused");
                 } else {
-                    info!("Window={window_id:?} unfocused");
+                    // info!("Window={window_id:?} unfocused");
                 }
             },
-            WindowEvent::ScaleFactorChanged { scale_factor, .. } => {
-                info!("Window={window_id:?} changed scale to {scale_factor}");
+            WindowEvent::ScaleFactorChanged { .. } => {
+                // info!("Window={window_id:?} changed scale to {scale_factor}");
             },
             WindowEvent::ThemeChanged(theme) => {
-                info!("Theme changed to {theme:?}");
+                // info!("Theme changed to {theme:?}");
                 window.set_draw_theme(theme);
             },
             WindowEvent::RedrawRequested => {
@@ -444,7 +444,7 @@ impl ApplicationHandler for Application {
                 window.set_occluded(occluded);
             },
             WindowEvent::CloseRequested => {
-                info!("Closing Window={window_id:?}");
+                // info!("Closing Window={window_id:?}");
                 self.windows.remove(&window_id);
             },
             WindowEvent::ModifiersChanged(modifiers) => {
@@ -452,11 +452,11 @@ impl ApplicationHandler for Application {
                 info!("Modifiers changed to {:?}", window.modifiers);
             },
             WindowEvent::MouseWheel { delta, .. } => match delta {
-                MouseScrollDelta::LineDelta(x, y) => {
-                    info!("Mouse wheel Line Delta: ({x},{y})");
+                MouseScrollDelta::LineDelta(_x, _y) => {
+                    // info!("Mouse wheel Line Delta: ({x},{y})");
                 },
-                MouseScrollDelta::PixelDelta(px) => {
-                    info!("Mouse wheel Pixel Delta: ({},{})", px.x, px.y);
+                MouseScrollDelta::PixelDelta(_px) => {
+                    // info!("Mouse wheel Pixel Delta: ({},{})", px.x, px.y);
                 },
             },
             WindowEvent::KeyboardInput { event, is_synthetic: false, .. } => {
@@ -476,7 +476,7 @@ impl ApplicationHandler for Application {
                 }
             },
             WindowEvent::PointerButton { button, state, .. } => {
-                info!("Pointer button {button:?} {state:?}");
+                // info!("Pointer button {button:?} {state:?}");
                 let mods = window.modifiers;
                 if let Some(action) = state
                     .is_pressed()
@@ -487,11 +487,11 @@ impl ApplicationHandler for Application {
                 }
             },
             WindowEvent::PointerLeft { .. } => {
-                info!("Pointer left Window={window_id:?}");
+                // info!("Pointer left Window={window_id:?}");
                 window.cursor_left();
             },
             WindowEvent::PointerMoved { position, .. } => {
-                info!("Moved pointer to {position:?}");
+                // info!("Moved pointer to {position:?}");
                 window.cursor_moved(position);
             },
             WindowEvent::ActivationTokenDone { token: _token, .. } => {
@@ -505,39 +505,39 @@ impl ApplicationHandler for Application {
             },
             WindowEvent::Ime(event) => match event {
                 Ime::Enabled => info!("IME enabled for Window={window_id:?}"),
-                Ime::Preedit(text, caret_pos) => {
-                    info!("Preedit: {}, with caret at {:?}", text, caret_pos);
+                Ime::Preedit(_text, _caret_pos) => {
+                    // info!("Preedit: {}, with caret at {:?}", text, caret_pos);
                 },
-                Ime::Commit(text) => {
-                    info!("Committed: {}", text);
+                Ime::Commit(_text) => {
+                    // info!("Committed: {}", text);
                 },
                 Ime::Disabled => info!("IME disabled for Window={window_id:?}"),
             },
             WindowEvent::PinchGesture { delta, .. } => {
                 window.zoom += delta;
-                let zoom = window.zoom;
+                let _zoom = window.zoom;
                 if delta > 0.0 {
-                    info!("Zoomed in {delta:.5} (now: {zoom:.5})");
+                    // info!("Zoomed in {delta:.5} (now: {zoom:.5})");
                 } else {
-                    info!("Zoomed out {delta:.5} (now: {zoom:.5})");
+                    // info!("Zoomed out {delta:.5} (now: {zoom:.5})");
                 }
             },
             WindowEvent::RotationGesture { delta, .. } => {
                 window.rotated += delta;
-                let rotated = window.rotated;
+                let _rotated = window.rotated;
                 if delta > 0.0 {
-                    info!("Rotated counterclockwise {delta:.5} (now: {rotated:.5})");
+                    // info!("Rotated counterclockwise {delta:.5} (now: {rotated:.5})");
                 } else {
-                    info!("Rotated clockwise {delta:.5} (now: {rotated:.5})");
+                    // info!("Rotated clockwise {delta:.5} (now: {rotated:.5})");
                 }
             },
-            WindowEvent::PanGesture { delta, phase, .. } => {
+            WindowEvent::PanGesture { delta, .. } => {
                 window.panned.x += delta.x;
                 window.panned.y += delta.y;
-                info!("Panned ({delta:?})) (now: {:?}), {phase:?}", window.panned);
+                // info!("Panned ({delta:?})) (now: {:?}), {phase:?}", window.panned);
             },
             WindowEvent::DoubleTapGesture { .. } => {
-                info!("Smart zoom");
+                // info!("Smart zoom");
             },
             WindowEvent::TouchpadPressure { .. }
             | WindowEvent::DragLeft { .. }
@@ -554,14 +554,14 @@ impl ApplicationHandler for Application {
     fn device_event(
         &mut self,
         _event_loop: &dyn ActiveEventLoop,
-        device_id: Option<DeviceId>,
-        event: DeviceEvent,
+        _device_id: Option<DeviceId>,
+        _event: DeviceEvent,
     ) {
-        info!("Device {device_id:?} event: {event:?}");
+        // info!("Device {device_id:?} event: {event:?}");
     }
 
     fn can_create_surfaces(&mut self, event_loop: &dyn ActiveEventLoop) {
-        info!("Ready to create surfaces");
+        // info!("Ready to create surfaces");
         self.dump_monitors(event_loop);
 
         // Create initial window.
@@ -572,7 +572,7 @@ impl ApplicationHandler for Application {
 
     fn about_to_wait(&mut self, event_loop: &dyn ActiveEventLoop) {
         if self.windows.is_empty() {
-            info!("No windows left, exiting...");
+            // info!("No windows left, exiting...");
             event_loop.exit();
         }
     }
@@ -584,7 +584,7 @@ impl ApplicationHandler for Application {
 
 impl Drop for Application {
     fn drop(&mut self) {
-        info!("Application exited");
+        // info!("Application exited");
     }
 }
 
@@ -592,10 +592,10 @@ impl ApplicationHandlerExtMacOS for Application {
     fn standard_key_binding(
         &mut self,
         _event_loop: &dyn ActiveEventLoop,
-        window_id: WindowId,
-        action: &str,
+        _window_id: WindowId,
+        _action: &str,
     ) {
-        info!(?window_id, ?action, "macOS standard key binding");
+        // info!(?window_id, ?action, "macOS standard key binding");
     }
 }
 
@@ -653,7 +653,7 @@ impl WindowState {
         let surface = Surface::new(app.context.as_ref().unwrap(), Arc::clone(&window))?;
 
         let theme = window.theme().unwrap_or(Theme::Dark);
-        info!("Theme: {theme:?}");
+        // info!("Theme: {theme:?}");
         let named_idx = 0;
         window.set_cursor(CURSORS[named_idx].into());
 
@@ -743,7 +743,7 @@ impl WindowState {
             Some(_) => None,
             None => Some(LogicalSize::new(25.0, 25.0).into()),
         };
-        info!("Had increments: {}", new_increments.is_none());
+        // info!("Had increments: {}", new_increments.is_none());
         self.window.set_surface_resize_increments(new_increments);
     }
 
@@ -765,7 +765,7 @@ impl WindowState {
             CursorGrabMode::Confined => CursorGrabMode::Locked,
             CursorGrabMode::Locked => CursorGrabMode::None,
         };
-        info!("Changing cursor grab mode to {:?}", self.cursor_grab);
+        // info!("Changing cursor grab mode to {:?}", self.cursor_grab);
         if let Err(err) = self.window.set_cursor_grab(self.cursor_grab) {
             error!("Error setting cursor grab: {err}");
         }
@@ -779,7 +779,7 @@ impl WindowState {
             OptionAsAlt::OnlyRight => OptionAsAlt::Both,
             OptionAsAlt::Both => OptionAsAlt::None,
         };
-        info!("Setting option as alt {:?}", self.option_as_alt);
+        // info!("Setting option as alt {:?}", self.option_as_alt);
         self.window.set_option_as_alt(self.option_as_alt);
     }
 
@@ -789,23 +789,23 @@ impl WindowState {
         let mut surface_size = old_surface_size;
 
         mem::swap(&mut surface_size.width, &mut surface_size.height);
-        info!("Requesting resize from {old_surface_size:?} to {surface_size:?}");
+        // info!("Requesting resize from {old_surface_size:?} to {surface_size:?}");
 
         if let Some(new_surface_size) = self.window.request_surface_size(surface_size.into()) {
             if old_surface_size == new_surface_size {
-                info!("Inner size change got ignored");
+                // info!("Inner size change got ignored");
             } else {
                 self.resize(new_surface_size);
             }
         } else {
-            info!("Requesting surface size is asynchronous");
+            // info!("Requesting surface size is asynchronous");
         }
     }
 
     /// Pick the next cursor.
     fn next_cursor(&mut self) {
         self.named_idx = (self.named_idx + 1) % CURSORS.len();
-        info!("Setting cursor to \"{:?}\"", CURSORS[self.named_idx]);
+        // info!("Setting cursor to \"{:?}\"", CURSORS[self.named_idx]);
         self.window.set_cursor(Cursor::Icon(CURSORS[self.named_idx]));
     }
 
@@ -853,7 +853,7 @@ impl WindowState {
 
     /// Resize the surface to the new size.
     fn resize(&mut self, size: PhysicalSize<u32>) {
-        info!("Surface resized to {size:?}");
+        // info!("Surface resized to {size:?}");
         #[cfg(not(android_platform))]
         {
             let (width, height) = match (NonZeroU32::new(size.width), NonZeroU32::new(size.height))
@@ -881,11 +881,11 @@ impl WindowState {
 
     /// Drag the window.
     fn drag_window(&self) {
-        if let Err(err) = self.window.drag_window() {
-            info!("Error starting window drag: {err}");
-        } else {
-            info!("Dragging window Window={:?}", self.window.id());
-        }
+        // if let Err(err) = self.window.drag_window() {
+        // info!("Error starting window drag: {err}");
+        // } else {
+        // info!("Dragging window Window={:?}", self.window.id());
+        // }
     }
 
     /// Drag-resize the window.
@@ -893,7 +893,7 @@ impl WindowState {
         let position = match self.cursor_position {
             Some(position) => position,
             None => {
-                info!("Drag-resize requires cursor to be inside the window");
+                // info!("Drag-resize requires cursor to be inside the window");
                 return;
             },
         };
@@ -931,10 +931,10 @@ impl WindowState {
             _ => return,
         };
 
-        if let Err(err) = self.window.drag_resize_window(direction) {
-            info!("Error starting window drag-resize: {err}");
+        if let Err(_err) = self.window.drag_resize_window(direction) {
+            // info!("Error starting window drag-resize: {err}");
         } else {
-            info!("Drag-resizing window Window={:?}", self.window.id());
+            // info!("Drag-resizing window Window={:?}", self.window.id());
         }
     }
 
@@ -950,7 +950,7 @@ impl WindowState {
     #[cfg(not(android_platform))]
     fn draw(&mut self) -> Result<(), Box<dyn Error>> {
         if self.occluded {
-            info!("Skipping drawing occluded window={:?}", self.window.id());
+            // info!("Skipping drawing occluded window={:?}", self.window.id());
             return Ok(());
         }
 
@@ -996,7 +996,7 @@ impl WindowState {
 
     #[cfg(android_platform)]
     fn draw(&mut self) -> Result<(), Box<dyn Error>> {
-        info!("Drawing but without rendering...");
+        // info!("Drawing but without rendering...");
         Ok(())
     }
 }
@@ -1193,7 +1193,7 @@ fn window_attributes_wayland(event_loop: &dyn ActiveEventLoop) -> WindowAttribut
 
     if let Some(token) = event_loop.read_token_from_env() {
         startup_notify::reset_activation_token_env();
-        info!("Using token {:?} to activate a window", token);
+        // info!("Using token {:?} to activate a window", token);
         window_attributes = window_attributes.with_activation_token(token);
     }
 
@@ -1209,13 +1209,13 @@ fn window_attributes_x11(
     #[cfg(any(x11_platform, wayland_platform))]
     if let Some(token) = event_loop.read_token_from_env() {
         startup_notify::reset_activation_token_env();
-        info!("Using token {:?} to activate a window", token);
+        // info!("Using token {:?} to activate a window", token);
         window_attributes = window_attributes.with_activation_token(token);
     }
 
     match std::env::var("X11_VISUAL_ID") {
         Ok(visual_id_str) => {
-            info!("Using X11 visual id {visual_id_str}");
+            // info!("Using X11 visual id {visual_id_str}");
             let visual_id = visual_id_str.parse()?;
             window_attributes = window_attributes.with_x11_visual(visual_id);
         },
@@ -1224,12 +1224,12 @@ fn window_attributes_x11(
 
     match std::env::var("X11_SCREEN_ID") {
         Ok(screen_id_str) => {
-            info!("Placing the window on X11 screen {screen_id_str}");
+            // info!("Placing the window on X11 screen {screen_id_str}");
             let screen_id = screen_id_str.parse()?;
             window_attributes = window_attributes.with_x11_screen(screen_id);
         },
         Err(_) => {
-            info!("Set the X11_SCREEN_ID env variable to place the window on non-default screen")
+            // info!("Set the X11_SCREEN_ID env variable to place the window on non-default screen")
         },
     }
 
